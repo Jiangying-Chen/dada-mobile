@@ -1,0 +1,68 @@
+@import 'uview-ui/theme.scss';
+
+/* 主题颜色 */
+$themes-color: #7F7DEB;  //整体背景色
+
+/* 颜色变量 */
+/* 行为相关颜色 */
+$color-base: #6322EF;
+$color-black:#3905A4;
+
+/* 按钮相关颜色 */
+$btn-base: #6322EF;
+$btn-light: #7F7DEB;
+$btn-black: #000000;
+$btn-success: #00B127;
+$btn-error: #CE0303;
+
+/* 文字基本颜色 */
+$text-color-white: #ffffff; //白
+$text-color-base: #0F0158; //基本色
+$text-color-black:#333333;
+$text-color-purple:#6322EF;
+$text-color-assist:#564D99;
+$text-color-grey: #cccccc; //灰
+$text-color-light:#C1C0FA; 
+
+
+/* 背景颜色 v */
+$bg-color-base: #7F7DEB;
+$bg-color-white:#F8F8F8;
+$bg-color-black:#0F0158;
+$bg-color-light:#C1C0FA; 
+
+/* 边框颜色 v */
+$border-color:#C1C0FA;  
+
+/* 尺寸变量 */
+
+/* 文字尺寸 */
+$font-size-sm:24rpx;
+$font-size-base:28rpx;
+$font-size-lg:32rpx;
+$font-size-title:36rpx;
+
+/* 图片尺寸 */
+$img-size-sm:40rpx;
+$img-size-base:52rpx;
+$img-size-lg:80rpx;
+
+/* Border Radius */
+$border-radius-base: 16rpx;
+
+$border-radius-sm: 4rpx;
+$border-radius-lg: 12rpx;
+$border-radius-circle: 50%;
+
+/* 水平间距 */
+$spacing-row-sm: 10px;
+$spacing-row-base: 20rpx;
+$spacing-row-lg: 30rpx;
+
+/* 垂直间距 */
+$spacing-col-sm: 8rpx;
+$spacing-col-base: 16rpx;
+$spacing-col-lg: 24rpx;
+
+/* 透明度 */
+$opacity-disabled: 0.3; // 组件禁用态的透明度

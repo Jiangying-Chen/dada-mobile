@@ -1,0 +1,633 @@
+{
+	"easycom": {
+		"^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
+	},
+	"tabBar": {
+		"color": "#fff",
+		"selectedColor": "#C1C0FA",
+		"borderStyle": "white",
+		"backgroundColor": "#7F7DEB",
+		"list": [{
+				"pagePath": "pages/index/index",
+				"iconPath": "static/tabbar/home-1.png",
+				"selectedIconPath": "static/tabbar/home.png",
+				"text": "首页"
+			},
+			{
+				"pagePath": "pages/square/index",
+				"iconPath": "static/tabbar/quanzi-1.png",
+				"selectedIconPath": "static/tabbar/quanzi.png",
+				"text": "黑洞助手"
+			},
+			{
+				"pagePath": "pages/store/index",
+				"iconPath": "static/tabbar/msg-1.png",
+				"selectedIconPath": "static/tabbar/msg.png",
+				"text": "星尘商店"
+			},
+			{
+				"pagePath": "pages/my/jidi",
+				"iconPath": "static/tabbar/my-1.png",
+				"selectedIconPath": "static/tabbar/my.png",
+				"text": "基地"
+			}
+		]
+	}, 
+	"pages": [{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "校园墙",
+				"backgroundColor": "#fff",
+				"navigationBarTextStyle": "white",
+				"enablePullDownRefresh": true,
+				"navigationStyle":"custom"
+			}
+		}, {
+			"path": "pages/my/my",
+			"style": {
+				"navigationBarTitleText": "个人中心",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/post/detail",
+			"style": {
+				"navigationBarTitleText": "详情",
+				"navigationStyle":"custom"
+			}
+		}, {
+			"path": "pages/store/productlist",
+			"style": {
+				"navigationBarTitleText": "燃料兑换",
+				"navigationStyle":"custom"
+			}
+		}, {
+			"path": "pages/store/detail",
+			"style": {
+				"navigationBarTitleText": "商品详情",
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/index/change",
+			"style": {
+				"navigationBarTitleText": "星际航行",
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/my/jidi",
+			"style": {
+				"navigationBarTitleText": "基地",
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/my/setinfo",
+			"style": {
+				"navigationBarTitleText": "宇宙飞船中心",
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/my/kefu",
+			"style": {
+				"navigationBarTitleText": "客服反馈",
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/my/myinfo",
+			"style": {
+				"navigationBarTitleText": "编辑资料",
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/my/privacy",
+			"style": {
+				"navigationBarTitleText": "隐私设置",
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/minerals/index",
+			"style": {
+				"navigationBarTitleText": "矿产",
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/minerals/friend",
+			"style": {
+				"navigationBarTitleText": "矿产",
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/store/index",
+			"style": {
+				"navigationBarTitleText": "星尘商店",
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/post/confirm",
+			"style": {
+				"navigationBarTitleText": "付费确认"
+			}
+		},
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "首次登录",
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/login/parent",
+			"style": {
+				"navigationBarTitleText": "设置母星",
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/user/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationStyle":"custom"
+			}
+		}, {
+			"path": "pages/user/home",
+			"style": {
+				"navigationBarTitleText": "个人主页",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/message/addmessage",
+			"style": {
+				"navigationBarTitleText": "流星讯息",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/message/searchmessage",
+			"style": {
+				"navigationBarTitleText": "搜索好友",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/topic/detail",
+			"style": {
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true,
+				"navigationBarTextStyle":"white"
+			}
+		}, {
+			"path": "pages/discuss/detail",
+			"style": {}
+		}, {
+			"path": "pages/my/discuss",
+			"style": {}
+		}, {
+			"path": "pages/my/topic",
+			"style": {}
+		}, {
+			"path": "pages/my/post",
+			"style": {}
+		}, {
+			"path": "pages/my/thumb",
+			"style": {}
+		}, {
+			"path": "pages/post/add",
+			"style": {
+				
+					"navigationBarTitleText": "发布动态",
+					"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/message/message",
+			"style": {
+				"enablePullDownRefresh": true,
+				"navigationStyle":"custom"
+			}
+		}, {
+			"path": "pages/message/list",
+			"style": {}
+		}, {
+			"path": "pages/my/fans",
+			"style": {}
+		}, {
+			"path": "pages/my/follow",
+			"style": {}
+		}, {
+			"path": "pages/topic/add/add",
+			"style": {}
+		}, {
+			"path": "pages/square/square",
+			"style": {
+				"enablePullDownRefresh": true,
+				"navigationStyle":"custom"
+			}
+		}, {
+			"path": "pages/square/index",
+			"style": {
+				"enablePullDownRefresh": true,
+				"navigationStyle":"custom"
+			}
+		},{
+			"path": "pages/topic/class-list",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/discuss/add",
+			"style": {}
+		}, {
+			"path": "pages/user/edit-info/edit",
+			"style": {
+				"navigationBarTitleText": "信息修改",
+				"navigationStyle":"custom"
+			}
+		}, {
+			"path": "pages/user/edit-info/submit",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/topic/list",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/jump/jump",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		},{
+			"path": "pages/post/video-detail",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false,
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+			}
+
+		}, 
+		{
+		    "path" : "pages/system/system",
+		    "style": {
+		    	"navigationBarTitleText": "系统消息",
+		    	"enablePullDownRefresh": true
+		    }
+		    
+		},
+		{
+			"path": "pages/discuss/list",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}
+	    ,{
+            "path" : "pages/topic/choose-topic/choose-topic",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "选择星球",
+                "navigationStyle": "custom",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/webview/webview",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/topic/topic-user",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false,
+				"navigationStyle":"custom"
+            }
+            
+        }
+        ,{
+            "path" : "pages/user/sms-login",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/topic/info-edit",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/topic/add/category",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/topic/admin",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/vote/vote",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/discuss/choose-discuss/choose-discuss",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/search/search",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        
+        ,{
+            "path" : "pages/pay/pay",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/account/account",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/bill/bill",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/sign/sign",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "签到",
+                "enablePullDownRefresh": false
+            }
+            
+        },
+		{
+		    "path" : "pages/sign/integral",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "我的积分",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
+        ,{
+            "path" : "pages/user/contact",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "联系客服",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/luck-draw/luck-draw",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "抽奖",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/luck-draw/prize-record",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "抽奖记录",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/user/go-login",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/user/email-login",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/user/register",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/user/protocol",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/report/report",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/report/list",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/report/detail",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/user/vip/vip",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,
+		{
+		    "path" : "pages/im/chat/chat",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "私聊",
+		        "enablePullDownRefresh": false,
+				"backgroundColor": "#333",
+				"app-plus":{
+					"titleNView":{
+						"buttons": [
+							{
+								"type": "menu"
+							}
+						]
+					}
+				}
+				
+		    }
+		    
+		},
+		{
+			"path": "pages/im/chat-list/chat-list",
+			"style": {
+				"navigationBarTitleText": "林风IM",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true
+			}
+		}
+        
+        ,{
+            "path" : "pages/im/notice-list/notice-list",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "通知消息",
+                "navigationStyle": "default"
+            }
+            
+        }
+        ,{
+            "path" : "pages/user/edit-info/setting",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        
+        ,{
+            "path" : "pages/account/cash-out",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
+	"subPackages": [
+		{
+			"root": "subpages/content",
+			"pages": [
+				{
+					"path": "article/article",
+					"style": {
+						"navigationBarTitleText": "详情"
+					}
+				},
+				{
+				    "path" : "article/add",
+				    "style" :                                                                                    
+				    {
+				        "navigationBarTitleText": "发长文",
+				        "enablePullDownRefresh": false
+				    }
+				    
+				}
+			    ,{
+                    "path" : "index-category/index-category",
+                    "style" :                                                                                    
+                {
+                    "enablePullDownRefresh": true,
+					"navigationStyle": "custom"
+                }
+                
+                }
+            ]
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "噗叽校园生活",
+		"navigationBarBackgroundColor": "#FFFFFF",
+		"backgroundColor": "#FFFFFF"
+	}
+}
