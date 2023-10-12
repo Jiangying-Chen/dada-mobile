@@ -87,7 +87,7 @@
 			return {
 				uploadShow: false,
 				selectedImage: '',
-				title: '林风IM',
+				title: '黑洞助手',
 				show: false,
 				selectedAvartar: null,
 				maxImageMB: 3,

@@ -1,16 +1,20 @@
 <template>
 	<view>
 		<block v-for="(item, index) in userList" :key="index">
-			<navigator :url="'/pages/user/home?uid=' + item.uid" class="member-item">
+			<navigator :url="'/pages/user/home?uid=' + item.uid" :class="isyonghu?'member-item':'member-item1'">
 				<u-avatar class="avatar" :src="item.avatar"></u-avatar>
 				<view class="user">
-					<text class="name">{{ item.username }}</text>
+					<text class="name" style="color: #0F0158;padding-left: 10rpx;">{{ item.username }}</text>
 					<text v-if="item.gender == 1" class="iconfont icon-nan"></text>
 					<text v-if="item.gender == 2" class="iconfont icon-nv"></text>
 				</view>
-				<u-button :custom-style="customStyle" @click="follow(index, item.uid)" v-if="item.hasFollow === 0" class="btn-gz" type="default" size="mini">关注</u-button>
-				<u-button @click="cancelFollow(index, item.uid)" v-if="item.hasFollow === 1" class="btn-gz" type="default" size="mini" plain>互相关注</u-button>
-				<u-button @click="cancelFollow(index, item.uid)" v-if="item.hasFollow === 2" class="btn-gz" type="default" size="mini" plain>已关注</u-button>
+				<view v-if="isyonghu">
+					<u-button :custom-style="customStyle" @click="follow(index, item.uid)" v-if="item.hasFollow === 0" class="btn-gz" type="default" size="mini">关注</u-button>
+					<u-button @click="cancelFollow(index, item.uid)" v-if="item.hasFollow === 1" class="btn-gz" type="default" size="mini" plain>互相关注</u-button>
+					<u-button @click="cancelFollow(index, item.uid)" v-if="item.hasFollow === 2" class="btn-gz" type="default" size="mini" plain>已关注</u-button>
+								
+				</view>
+				
 			</navigator>
 		</block>
 		<!-- 加载状态 -->
@@ -25,7 +29,11 @@
 export default {
 	props: {
 		list: Array,
-		loadStatus: String
+		loadStatus: String,
+		isyonghu:{
+			type: Boolean,
+			default: true
+		},
 	},
 	data() {
 		return {
@@ -80,6 +88,17 @@ export default {
 	}
 	
 }
+.member-item1 {
+	display: flex;
+	align-items: center;
+	padding: 20rpx;
+	background: #C1C0FA;
+	border-radius: 16rpx 16rpx 16rpx 16rpx;
+	&:last-child{
+		border-bottom: 0;
+	}
+	
+}
 
 .member-item .icon-nv {
 	color: #ff4d94;
@@ -95,6 +114,7 @@ export default {
 
 .member-item .user .name {
 	margin-right: 20rpx;
+	color:#0F0158 ;
 }
 
 .member-item .user .iconfont {

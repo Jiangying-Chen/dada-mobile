@@ -1,5 +1,5 @@
 <template>
-	<view class="bgbox">
+	<view>
 		<top-nave :bar-height="statusBarHeight" :nav-height="navigationBarHeight" title="商品详情"
 			:isback="true"></top-nave>
 		<view class="productimage">
@@ -106,55 +106,67 @@
 			},
 			// 创建订单
 			changeProduct() {
-				let that = this;
-				if (that.pronumber == 0) {
+				if (this.pronumber == 0) {
 					uni.showToast({
 						title: '请选择商品数量',
 						icon: 'none',
 						duration: 2000,
 					})
-					return
+				}else{
+					uni.navigateTo({
+						url:`/pages/store/exchange?id=${this.detail.id}&num=${this.pronumber}&uid=${this.loginUserInfo.uid}`
+					})
 				}
-				uni.showLoading({
-					title: '正在创建订单...',
-					mask: true,
-				});
-				that.$H.post("pointOrder/" + that.detail.id, {
-					num: that.pronumber,
-					uid: that.loginUserInfo.uid
-				}).then(res => {
-					if (res.code == 0) {
-						// 出票
-						that.$H.post("pointOrder/paid/" + res.result.sn + "?uid=" + that.loginUserInfo.uid).then(
-							res2 => {
-								uni.hideLoading();
-								if (res2.code == 0) {
+				
+				// let that = this;
+				// if (that.pronumber == 0) {
+				// 	uni.showToast({
+				// 		title: '请选择商品数量',
+				// 		icon: 'none',
+				// 		duration: 2000,
+				// 	})
+				// 	return
+				// }
+				// uni.showLoading({
+				// 	title: '正在创建订单...',
+				// 	mask: true,
+				// });
+				// that.$H.post("pointOrder/" + that.detail.id, {
+				// 	num: that.pronumber,
+				// 	uid: that.loginUserInfo.uid
+				// }).then(res => {
+				// 	if (res.code == 0) {
+				// 		// 出票
+				// 		that.$H.post("pointOrder/paid/" + res.result.sn + "?uid=" + that.loginUserInfo.uid).then(
+				// 			res2 => {
+				// 				uni.hideLoading();
+				// 				if (res2.code == 0) {
 
 
-									uni.showToast({
-										title: '兑换成功',
-										icon: 'none',
-										duration: 2000,
-									})
-								} else {
-									uni.showToast({
-										title: res2.msg,
-										icon: 'none',
-										duration: 2000,
-									})
-								}
+				// 					uni.showToast({
+				// 						title: '兑换成功',
+				// 						icon: 'none',
+				// 						duration: 2000,
+				// 					})
+				// 				} else {
+				// 					uni.showToast({
+				// 						title: res2.msg,
+				// 						icon: 'none',
+				// 						duration: 2000,
+				// 					})
+				// 				}
 
-							})
-					} else {
-						uni.showToast({
-							title: res.msg,
-							icon: 'none',
-							duration: 2000,
-						})
-					}
+				// 			})
+				// 	} else {
+				// 		uni.showToast({
+				// 			title: res.msg,
+				// 			icon: 'none',
+				// 			duration: 2000,
+				// 		})
+				// 	}
 
-				})
-			}
+				// })
+			},
 
 		}
 	};

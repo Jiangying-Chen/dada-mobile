@@ -125,7 +125,7 @@
 
 <style lang="scss" scoped>
 	.bgbox {
-		background-image: url(https://mallwj.hm-myy.cn/169232500106920230818101641.png);
+		background-image: url('https://mallwj.hm-myy.cn/169232500106920230818101641.png');
 		background-size: 100%;
 		background-repeat: no-repeat;
 	}

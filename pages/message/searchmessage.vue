@@ -1,13 +1,13 @@
 <template>
 	<view style="position: relative;" class="mainbg">
-		<top-nave :bar-height="statusBarHeight" :nav-height="navigationBarHeight" title="添加好友"
+		<top-nave :bar-height="statusBarHeight" :nav-height="navigationBarHeight" title="添加好友"  title-color='#333'
 			:isback="true"></top-nave>
 		<view class="searchbox uni-flex uni-row">
 			<view class="searchimage">
-				<image src="https://mallwj.hm-myy.cn/169113249064520230804150130.png" mode=""></image>
+				<image src="https://mallwj.hm-myy.cn/169285452984320230824132209.png" mode=""></image>
 			</view>
 			<view class="searchinput" style="flex: 1 1 0%;">
-				<input type="text" v-model="keyword" placeholder="搜索昵称" @blur="searchPost"  />
+				<input type="text" v-model="keyword" placeholder="搜索昵称" @blur="searchPost" placeholder-style='color:#C1C0FA' />
 			</view>
 		</view>
 		<view class="applylist" v-if="searchList.length>0">
@@ -62,24 +62,21 @@
 		</view>
 		
 		<u-popup v-model="openPop" mode="center" border-radius="14">
-			<view class="informationShow-box">
-				<view class="flex-items flex-column informationShow-centent">
-					<view class="mar-top-60">
-						<label class="title">申请好友</label>
+			<view class="informationShow-centent">
+					<view class="title">申请添加好友</view>
+					<view class="flex-items box">
+						<view class="label-left">发送</view>
+						<view class="label-right">{{notation}}</view>
 					</view>
-					<view class="flex-items flex-row mar-top-60">
-						<view class="fs26">备注</view>
-						<input class="remark mar-left-20 fs26" v-model="message" />
+					<view class="flex-items box">
+						<view class="label-left">备注</view>
+						<view class="label-right"><input class="remark " v-model="message" /></view>
 					</view>
-					<view class="flex-items flex-row mar-top-30 ">
-						<label class="fs26">对方</label>
-						<input class="nick mar-left-20 fs26" v-model="notation" disabled="disabled" />
+					
+					<view class="flex-footer">
+						<view class="btns exitBut " @click="outPop">取消</view>
+						<view class="btns submitbut" @click="submitPop">提交</view>
 					</view>
-					<view class="flex-row-plus massageDes-but">
-						<view class="exitBut" @click="outPop">取消</view>
-						<view class="submitbut" @click="submitPop">提交</view>
-					</view>
-				</view>
 			</view>
 		</u-popup>
 	</view>
@@ -276,14 +273,18 @@
 		}
 	}
 </script>
-
-<style lang="scss">
+<style>
+	page{
+		background-color: white;
+	}
+</style>
+<style lang="scss" scoped>
 	.searchbox {
-		background: rgba(0, 0, 0, 0.5);
+		//background: rgba(0, 0, 0, 0.5);
 		border-radius: 22px;
 		margin: 0 16px;
 		padding: 12px 20px;
-	
+	    border:1px solid $btn-base;
 		.searchimage {
 			width: 20px;
 			height: 20px;
@@ -299,25 +300,15 @@
 	
 			input {
 				background: none;
-				color: white;
+				color: $text-color-base;
 			}
 		}
-	}
-	.to-add{
-		margin: 12px 17px;
-		border-radius: 20px 20px 20px 20px;
-		border: 1px solid #FFFFFF;
-		font-size: 16px;
-		font-weight: 400;
-		color: #FFFFFF;
-		text-align: center;
-		padding: 13rpx 0;
 	}
 	.top_tite{
 		margin: 12px 17px;
 		font-size: 14px;
 		font-weight: 500;
-		color: #FFFFFF;
+		color: $text-color-base;
 	}
 	
 	.msg-empty{
@@ -325,18 +316,18 @@
 		  flex-direction: column;
 		  align-items:center ;
 		  min-height: 100rpx;
-		  
 		  .txt{
 			  color: white;
 			  font-size: 28rpx;
 			  margin-top: 20rpx;
+			  color:$text-color-assist;
 		  }
 	}
 	
 	.applylist{
 		margin: 0 17px;
 		.personview{
-			background: #06407A;
+			background: $bg-color-light;
 			border-radius: 8px 8px 8px 8px;
 			padding: 20px 10px 16px 16px;
 			margin-bottom: 12px;
@@ -353,18 +344,15 @@
 				}
 				.left-info {
 					margin-left: 8px;
-				
 					.info-name {
 						font-size: 14px;
 						font-weight: 500;
-						color: #FFFFFF;
-						// margin-bottom: 9px;
+						color: $text-color-base;
 					}
-				
 					.info-time {
 						font-size: 12px;
 						font-weight: 400;
-						color: rgba(255, 255, 255, 0.6);
+						color: $text-color-assist;
 					}
 				}
 				
@@ -376,9 +364,9 @@
 				.btn-agree{
 					font-size: 12px;
 					font-weight: 400;
-					color: #FFFFFF;
+					color:$text-color-white;
 					padding: 0px 12px;
-					background: #00B127;
+					background: $btn-success;
 					border-radius: 18px 18px 18px 18px;
 					line-height: 24px;
 					height: 24px;
@@ -386,9 +374,9 @@
 				.btn-refuse{
 					font-size: 12px;
 					font-weight: 400;
-					color: #FFFFFF;
+					color: $text-color-white;
 					padding: 0px 12px;
-					background: #CE0303;
+					background: $btn-error;
 					border-radius: 18px 18px 18px 18px;
 					margin-right: 9px;
 					line-height: 24px;
@@ -396,12 +384,12 @@
 				}
 				.btn-add{
 					height: 27px;
-					background: #03D7FC;
+					background: $btn-base;
 					border-radius: 14px 14px 14px 14px;
 					padding: 0 12px;
 					font-size: 12px;
 					font-weight: 500;
-					color: #06407A;
+					color: $text-color-white;
 					line-height: 27px;
 				}
 			}
@@ -411,74 +399,68 @@
 		display: flex;
 		align-items: center;
 	}
-	.flex-column {
-		flex-direction: column
-	}
+	
 	.flex-row-plus {
 		display: flex;
 		flex-direction: row
 	}
-	.mar-top-30 {
-		margin-top: 30upx;
-	}
 	
-	.mar-top-60 {
-		margin-top: 60upx;
-	}
-	.mar-left-40 {
-		margin-left: 40upx;
-	}
-	.informationShow-box {
-		.flex-items {
-			input {
-				padding-left: 16upx;
+	.informationShow-centent {
+			width: 580rpx;
+			height: 480rpx;
+			.title{
+				font-size: $font-size-lg;
+				font-weight: bold;
+				color: $text-color-black;
+				text-align: center;
+				margin: 42rpx auto;
 			}
-		}
-	
-		.phoneStyle {
-			input {
-				background: #EEEEEE;
-				color: #999999;
+			.box{
+				margin-bottom: 40rpx;
+				.label-left{
+					width: 140rpx;
+					font-size: $font-size-base;
+					font-weight: 400;
+					color: #000000;
+					text-align: center;
+					
+				}
+				.label-right{
+					flex:1;
+					.remark {
+						border: 2rpx solid #D9D9D9;
+						width: 360rpx;
+						height: 66rpx;
+						line-height: 66rpx;
+						border-radius: 16rpx;
+						padding: 0 20rpx;
+					}
+				}
 			}
-		}
+			
 	
-		.informationShow-centent {
-			width: 520upx;
-			height: 550upx;
-	
-			.remark {
-				border: 1upx solid #DDDDDD;
-				width: 300upx;
-				height: 48upx;
+		.flex-footer{
+			display: flex;
+			padding: 26rpx 32rpx;
+			justify-content: space-between;
+			align-items: center;
+			.btns{
+				width: 220rpx;
+				height: 64rpx;
+				text-align: center;
+				//line-height: 64rpx;
+				border-radius: 32rpx ;
+				border: 1upx solid $btn-base;
 			}
-	
-			.nick {
-				border: 1upx solid #DDDDDD;
-				width: 300upx;
-				height: 48upx;
-			}
-	
-			.massageDes-but {
-				position: absolute;
-				bottom: 0;
-			}
-	
 			.exitBut {
-				border: 1upx solid #E5E5E5;
-				width: 260upx;
-				height: 90upx;
-				text-align: center;
-				line-height: 90upx;
+				background:$text-color-white;
+				color: $btn-base;
 			}
-	
 			.submitbut {
-				background-color: #323232;
-				width: 260upx;
-				height: 90upx;
-				text-align: center;
-				line-height: 90upx;
-				color: #FFFFFF;
+				background:$btn-base;
+				color: $text-color-white;
 			}
 		}
+	
 	}
 </style>

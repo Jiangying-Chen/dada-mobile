@@ -10,25 +10,26 @@ export default {
 			options.complete = (response) => {
 				if (response.statusCode == 200 || response.statusCode == 0) {
 					if (response.data.code == 401 || response.data.code == 420) {
-						// #ifdef MP-WEIXIN
+							uni.setStorageSync("token", null);
 							uni.navigateTo({
 								url: "/pages/user/login"
 							})
-						// #endif
 						
-						// #ifdef H5||APP-PLUS
-							uni.navigateTo({
-								url: "/pages/user/go-login"
-							})
-						// #endif
+					}
+					//token为空，或者token过期
+					if(response.data.code == 403){
+						uni.setStorageSync("token", null);
+						uni.navigateTo({
+							url: "/pages/user/login"
+						})
 					}
 
 					if (response.data.code == 500) {
-						uni.showToast({
-							title: response.data.msg,
-							icon: "none",
-							duration: 2000
-						});
+						// uni.showToast({
+						// 	title: response.data.msg,
+						// 	icon: "none",
+						// 	duration: 2000
+						// });
 					}
 					resolve(response.data)
 				} else {
@@ -62,6 +63,16 @@ export default {
 			header: header
 		}
 
+		return this.request(options);
+	},
+	
+	delete(url, data = {}, header = {}) {
+		let options = {
+			url: url,
+			data: data,
+			header: header,
+			method: "DELETE"
+		}
 		return this.request(options);
 	}
 };

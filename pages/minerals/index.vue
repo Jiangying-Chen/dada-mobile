@@ -1,11 +1,12 @@
 <template>
-	<view style="position: relative;background: #090C17;">
+	<!-- position: relative; -->
+	<view style="background: #090C17;">
 		<top-nave :bar-height="statusBarHeight" :nav-height="navigationBarHeight" title="矿产" :isback="true"></top-nave>
 		<view class="toptitle">
 			我的矿产<span>点击矿石可兑换燃料</span>
 		</view>
 		<scroll-view class="mineralsview" scroll-x="true">
-			<view class="mineralsbox" v-for="item in mineralList">
+			<view class="mineralsbox" v-for="item in mineralList"   @click="changeMinerals(item)">
 				<view class="mineralsimage">
 					<image :src="item.image" mode=""></image>
 					<span class="mineralsnumber">{{item.mineralNum}}</span>
@@ -19,7 +20,8 @@
 			</view>
 		</scroll-view>
 		<view class="minerals">
-			<image src="https://mallwj.hm-myy.cn/168992259982520230721145639.png" mode="widthFix"></image>
+			<!-- <image src="https://mallwj.hm-myy.cn/168992259982520230721145639.png" mode="widthFix"></image> -->
+			<image src='https://mallwj.hm-myy.cn/169286377746220230824155617.png' mode="widthFix" style="width: 750rpx; height: 768rpx;"></image>
 			<view class="uni-flex uni-row mineralstop" style="justify-content: space-between;">
 				<view class="fontbox">
 					今日已挖矿石 {{isMineral}} 颗
@@ -28,49 +30,49 @@
 					下次刷新：{{downTime}}
 				</view>
 			</view>
-			<view class="minerals-po" style="left: 20px;bottom: 28px;" v-if="mineral[0].isShow == true"
-				@tap="getMineral(mineral[0])">
-				<image :src="mineral[0].data.image" mode=""></image>
-				<view class="titlename">
-					{{mineral[0].data.mineralName}}
-				</view>
-			</view>
-			<view class="minerals-po" style="left: 72px;bottom: 59px;" v-if="mineral[1].isShow == true"
+			<view class="minerals-po" style="left: 0;bottom: 400rpx;" v-if="mineral[1].isShow == true" 
 				@tap="getMineral(mineral[1])">
 				<image :src="mineral[1].data.image" mode=""></image>
 				<view class="titlename">
 					{{mineral[1].data.mineralName}}
 				</view>
 			</view>
-			<view class="minerals-po" style="left: 103px;bottom: 115px;" v-if="mineral[2].isShow == true"
+			<!-- <view class="minerals-po" style="left: 130rpx;bottom: 300rpx;"  v-if="mineral[1].isShow == true"
+				@tap="getMineral(mineral[1])">
+				<image :src="mineral[1].data.image" mode=""></image>
+				<view class="titlename">
+					{{mineral[1].data.mineralName}}
+				</view>
+			</view> -->
+			<view class="minerals-po" style="left: 0;bottom: 25rpx;" v-if="mineral[2].isShow == true" 
 				@tap="getMineral(mineral[2])">
 				<image :src="mineral[2].data.image" mode=""></image>
 				<view class="titlename">
 					{{mineral[2].data.mineralName}}
 				</view>
 			</view>
-			<view class="minerals-po" style="left: 159px;bottom: 133px;" v-if="mineral[3].isShow == true"
+			<view class="minerals-po" style="left: 130rpx;bottom: 300rpx;" v-if="mineral[3].isShow == true"
 				@tap="getMineral(mineral[3])">
 				<image :src="mineral[3].data.image" mode=""></image>
 				<view class="titlename">
 					{{mineral[3].data.mineralName}}
 				</view>
 			</view>
-			<view class="minerals-po" style="right: 114px;bottom: 0px;" v-if="mineral[4].isShow == true"
+			<view class="minerals-po" style="right: 36rpx;bottom:380rpx;" v-if="mineral[4].isShow == true"
 				@tap="getMineral(mineral[4])">
 				<image :src="mineral[4].data.image" mode=""></image>
 				<view class="titlename">
 					{{mineral[4].data.mineralName}}
 				</view>
 			</view>
-			<view class="minerals-po" style="right: 90px;bottom: 64px;" v-if="mineral[5].isShow == true"
+			<view class="minerals-po" style="right:8rpx;bottom: 62rpx;" v-if="mineral[5].isShow == true"
 				@tap="getMineral(mineral[5])">
 				<image :src="mineral[5].data.image" mode=""></image>
 				<view class="titlename">
 					{{mineral[5].data.mineralName}}
 				</view>
 			</view>
-			<view class="minerals-po" style="right: 29px;bottom: 54px;" v-if="mineral[6].isShow == true"
+			<view class="minerals-po" style="right:130rpx;bottom: 140rpx;" v-if="mineral[6].isShow == true" 
 				@tap="getMineral(mineral[6])">
 				<image :src="mineral[6].data.image" mode=""></image>
 				<view class="titlename">
@@ -78,9 +80,13 @@
 				</view>
 			</view>
 		</view>
-		<view class="titles">
-			好友矿区
+		<view class="friend-flex">
+			<view class="titles">
+				好友矿区
+			</view>
+			<view class="friend-label" @click="goToFriendList">全部好友<u-icon name="arrow-right-double"></u-icon></view>
 		</view>
+		
 		<scroll-view class="peopleview" scroll-x="true">
 			<view class="peoplebox" v-for="item in friendList" @tap="pageToFriend(item)">
 				<view class="peopleimage">
@@ -91,33 +97,44 @@
 				</view>
 			</view>
 		</scroll-view>
-
+         
+		 <!-- 矿石兑换和采集 -->
 		<u-popup v-model="isShowTs" mode="center" border-radius="18">
 			<view class="infobox">
 				<view class="infobox-title">
-					提示
+					矿石{{title}}
 				</view>
 				<view class="infobox-contact">
-					<view class="infobox-font">
-						当前矿石：{{nowMineral.data.mineralName}}
-					</view>
-					<view class="infobox-font">
-						可采集数量：{{nowMineral.data.mineralNum}}
-					</view>
-					
-					<view class="infobox-font uni-flex uni-row">
-						<view class="">
-							采集数量：
+					<view class ='flex-class'>
+						<view>
+							<image :src="nowMineral.data.image" mode="widthFix"  class="ks-img"></image>
 						</view>
-						<view class="uni-flex uni-row">
+						<view>
+							<view>
+								{{title=='采集'?nowMineral.data.mineralName:nowMineral.data.name}}
+							</view>
+							<!-- <view class="infobox-font">
+							 	可{{title}}数量：{{nowMineral.data.mineralNum}}
+							 </view> --> 
+							 <view v-if='title=="兑换"' style="color:#FFDA44">{{nowMineral.data.changePoint}}燃料</view>
+						</view>
+					</view>
+					<view class="infobox-font uni-flex uni-row">
+						<view style="margin-right: 30rpx;">
+							{{title}}数量
+						</view>
+						<view class="uni-flex uni-row" v-if='title=="采集"'>
+							1个
+						</view>
+						<view class="uni-flex uni-row" v-if='title=="兑换"'>
 							<view class="opt-btn" @tap="delMineral()">
-								<image src="https://mallwj.hm-myy.cn/169104455360720230803143553.png" mode=""></image>
+								<image src="https://mallwj.hm-myy.cn/169287337951120230824183619.png" mode=""></image>
 							</view>
 							<view class="">
 								<input type="number" v-model="toGetMineralNum" class="numberinput" @blur="sureNumber"/>
 							</view>
 							<view class="opt-btn" @tap="addMineral()">
-								<image src="https://mallwj.hm-myy.cn/169104455361520230803143553.png" mode=""></image>
+								<image src="https://mallwj.hm-myy.cn/169287336154120230824183601.png" mode=""></image>
 							</view>
 						</view>
 					</view>
@@ -125,9 +142,38 @@
 						<view class="btn-left" @tap="closePopup">
 							取消
 						</view>
-						<view class="btn-right" @tap="postGetMineral">
+						<view class="btn-right" @tap="postGetMineral" v-if='title=="采集"'>
 							确认
 						</view>
+						<view class="btn-right" @tap="submitChangeMineral" v-else>
+							确认
+						</view>
+					</view>
+				</view>
+			</view>
+		</u-popup>
+		
+		<!-- 采集满提示 -->
+		<u-popup v-model="isShowTsOne" mode="center" border-radius="18">
+			<view class="infobox">
+				<view class="infobox-title">
+					 提示
+				</view>
+				<view class="infobox-contact">
+					<view class ='ts-title'>
+					     <text>已采集</text><text style="color:#FFDA44">10</text><text>个矿石</text>
+					</view>
+					<view  class ='ts-label'>
+							今日采集已满，可飞往好友基地矿山采集
+					</view>
+					<view class="infobox-btn uni-flex uni-row" style="justify-content: space-between;">
+						<view class="btn-left" @tap="isShowTsOne=false">
+							返回基地
+						</view>
+						<view class="btn-right" @tap="goToFriendList">
+							去好友基地
+						</view>
+						
 					</view>
 				</view>
 			</view>
@@ -177,9 +223,11 @@
 				}],
 				isShowTs: false,
 				nowMineral: {},
-				toGetMineralNum:0,
+				toGetMineralNum:1,
 				downTime:'00:00:00',
-				isMineral:0
+				isMineral:0,
+				title:'采集',
+				isShowTsOne:false,
 			};
 		},
 		computed: {
@@ -211,13 +259,44 @@
 
 		},
 		methods: {
+			//去好友列表
+			goToFriendList(){
+				uni.navigateTo({
+					url:`/pages/minerals/friendList`
+				})
+			},
+			//兑换矿产
+			changeMinerals(item){
+				console.log('item',item)
+				this.isShowTs = true;
+				this.title = '兑换';
+				this.nowMineral.data = item;
+				this.toGetMineralNum=0;
+			},
+			//确定兑换,接口有问题
+			submitChangeMineral(){
+				if(this.toGetMineralNum==0){
+					this.$f.toast('请选择兑换数量')
+					return
+				}
+				this.$H.post(`mineral/member/changeMineral/${this.uid}?mineralId=${this.nowMineral.data.id}&num=${this.toGetMineralNum}`).then(res => {
+				    if(res.code===0){ //兑换成功
+						this.isShowTs = false;
+						this.hasMineralsList()
+						this.$f.toast('兑换成功！')
+					}else{
+						this.$f.toast(res.msg)
+					}
+					
+					
+				})
+			},
+			// 获取挖矿数量
 			getNumber(){
-				let _this = this;
-				// 获取挖矿数量
-				this.$H.get("mineral/member/mining/total/" + _this.uid ,{
+				this.$H.get("mineral/member/mining/total/" + this.uid ,{
 					type:'MINING'
 				}).then(res => {
-					_this.isMineral = res.result;
+					this.isMineral = res.result;
 				})
 				
 			},
@@ -288,6 +367,7 @@
 					})
 					numArray.forEach(v => {
 						let number = Math.ceil(Math.random() * 6);
+				        console.log('number',number)
 						_this.mineral[number].data = v;
 						_this.mineral[number].isShow = true;
 					})
@@ -326,21 +406,30 @@
 			
 				return isTimer
 			},
+			//采集
 			getMineral(data) {
-				console.log(1)
-				// this.$refs.isgetmineral.open('center');
-				this.isShowTs = true;
-				this.nowMineral = data;
-				this.toGetMineralNum = data.data.mineralNum
+				if(this.isMineral>9){
+					this.isShowTsOne = true;
+					return
+				}else{
+					this.isShowTs = true;
+					this.title='采集';
+					this.nowMineral = data;
+					console.log('this.nowMineral',this.nowMineral)
+					this.toGetMineralNum = data.data.mineralNum
+				}
+				
+				
 			},
 			closePopup() {
 				this.isShowTs = false;
 			},
+			//采集接口
 			postGetMineral() {
 				let _this = this;
 				this.$H.get("mineral/mining/" + _this.nowMineral.data.mineralId, {
 					uid: _this.uid,
-					num: _this.toGetMineralNum
+					num: 1 //_this.toGetMineralNum
 				}).then(res => {
 					// 随机数
 					// let numArray = new Array();
@@ -378,39 +467,78 @@
 		},
 	};
 </script>
+<style lang="scss">
+	page {
+	  width: 100%;
+	  overflow-x: hidden;
+	}
+</style>
 
-<style scoped lang="less">
+<style scoped lang="scss">
+.friend-flex{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	.friend-label{
+		font-size: 24rpx;
+		font-weight: 400;
+		color: rgba(255,255,255,0.8);
+		margin-right: 20rpx;
+	}
+}	
+.infobox{
+	.flex-class{
+		display: flex;
+		align-items: center;
+	}
+	.ks-img{
+		background: #000000;
+		width:160rpx;
+		height: 160rpx;
+		border: 2rpx solid #0180FF;
+		margin-right: 24rpx;
+		margin-bottom: 20rpx;
+	}
+	.ts-title{
+		text-align: center;
+		margin-bottom: 20rpx;
+		>text{
+			font-size: 32rpx;
+		}
+	}
+	.ts-label{
+		font-size: 12px;
+		font-weight: 400;
+		text-align: center;
+	}
+}	
+	
 	.titles{
 		font-size: 16px;
-		// font-family: Source Han Sans CN-Bold, Source Han Sans CN;
 		font-weight: bold;
-		color: #FFFFFF;
+		color: $text-color-white;
 		margin: 12px 12px;
 	}
 	// 提示框
 	.infobox {
-		width: 280px;
-		background: #06407A;
-		box-shadow: 0px 0px 16px 0px rgba(0, 102, 255, 0.4);
-
-		// border-radius: 9px 9px 9px 9px;
+		width: 560rpx;
+		background: $bg-color-black;
+		box-shadow: 0px 0px 16px 0px $bg-color-light;
+        color: $text-color-white;
 		.infobox-title {
-			padding: 13px 0 17px;
-			font-size: 18px;
-			font-weight: bold;
-			color: #FFFFFF;
+			padding: 26rpx;
+			font-size: 16px;
+			color: $text-color-white;
 			text-align: center;
 			border-bottom: 1px solid #000000;
 		}
-
 		.infobox-contact {
-			padding: 27px 12px;
+			padding: 36rpx;
 		}
 
 		.infobox-font {
 			font-size: 14px;
-			color: #FFFFFF;
-			// text-align: center;
+			color: $text-color-white;
 			padding: 8px 0;
 			.opt-btn{
 				width: 30px;
@@ -427,7 +555,7 @@
 				    padding: 3px 0;
 				    margin: 0 10px;
 				    background: #001338;
-				    border: 1px solid #03D7FC;
+				    border: 1px solid $btn-base;
 				    border-radius: 5px;
 			}
 		}
@@ -441,8 +569,9 @@
 				padding: 11px 0;
 				font-size: 14px;
 				font-weight: 500;
-				color: #FFFFFF;
-				background: #001422;
+				color: $text-color-white;
+				//border:1px solid $btn-base;
+				background: #020014;
 				border-radius: 20px;
 			}
 
@@ -452,8 +581,8 @@
 				padding: 11px 0;
 				font-size: 14px;
 				font-weight: 500;
-				color: #06407A;
-				background: linear-gradient(180deg, #03D7FC 0%, rgba(3, 215, 252, 0.55) 100%);
+				color: $text-color-white;
+				background: linear-gradient(180deg, #8B54FF 0%, #6322EF 100%);
 				border-radius: 20px;
 			}
 		}
@@ -476,9 +605,10 @@
 
 	.mineralsview {
 		white-space: nowrap;
-		width: 100%;
-		margin: 16px 12px;
-
+		// width: 400rpx;
+		width: 96%;
+		margin: 16px 2%;
+             
 		.mineralsbox {
 			display: inline-block;
 			width: 90px;
@@ -487,10 +617,9 @@
 			background: #1B202D;
 			padding-bottom: 6px;
 			margin-right: 12px;
-
+            
 			.mineralsimage {
 				background: #2A385C;
-				// border: 0.2px solid #1264DF;
 				margin: 4px 5px 0;
 				position: relative;
 
@@ -499,6 +628,7 @@
 					height: 70px;
 					margin: 4px 4px 0;
 					border: 1px solid #2246CA;
+					background-color: #000;
 				}
 
 				span {
@@ -556,11 +686,10 @@
 
 		.minerals-po {
 			position: absolute;
-			width: 60px;
-
+			//width: 200rpx;
 			image {
-				width: 42px;
-				height: 42px;
+				width: 150rpx;
+				height: 150rpx;
 				margin: 0 9px;
 			}
 
@@ -581,8 +710,9 @@
 
 	.peopleview {
 		white-space: nowrap;
-		width: 100%;
-		margin: 0px 12px;
+		// width: 400rpx;
+		width: 96%;
+		margin: 0px 2%;
 		padding:10px 0 37px ;
 
 		.peoplebox {

@@ -45,15 +45,23 @@
 			</view>
 		</view>
 		<view class="lf-top"></view> -->
+		<view class="search" style="" @click="getSearch">
+			<u-icon name="search" color='#ffffff' size="30"></u-icon>
+			<view class="searchTitle" style="">搜索你要的内容</view>
+		</view>
 		<view class="lf-tab">
 			<view class="lf-tab-con">
-				<u-tabs :list="tabList" font-size="28" name="cateName" bg-color="none" :current="current"
+				<u-tabs :list="classList" font-size="28" name="cateName" bg-color="none" :current="current"
 					@change="tabChange" inactive-color="#FFFFFF" active-color="#FFFFFF" show-bar="true" bar-height="6"
-					bar-color="#C1C0FA" height="40">
+					bar-color="#C1C0FA" height="40" >
 				</u-tabs>
 			</view>
-
 		</view>
+		<!-- 轮播图 -->
+		<!-- <view class="swiper-box">
+			<u-swiper @click="onSwiper" :list="swiperList" name="img" border-radius="20" mode="rect"
+				indicator-pos="bottomRight"></u-swiper>
+		</view> -->
 		<!-- 最新 -->
 		<view>
 			<post-list v-if="indexStyle1=='0'" :list="lastPost" :loadStatus="loadStatus" :showTag="true"
@@ -61,7 +69,9 @@
 			<post-list-twice v-if="indexStyle1=='1'" :dataList="lastPost" :loadStatus="loadStatus"></post-list-twice>
 		</view>
 		<!-- tabbar -->
+		
 		<lf-tabbar :active="0" :count="messegeNum"></lf-tabbar>
+		
 		<!-- 返回顶部 -->
 		<!-- <lf-back-top></lf-back-top> -->
 		<!-- 入住星球 -->
@@ -107,7 +117,6 @@
 			return {
 				sessionUid: uni.getStorageSync('userInfo').uid,
 				loadStatus: 'loadmore',
-
 				page: 1,
 				shareCover: 'http://pic.linfeng.tech/test/20220724/9a665bf276a44827ad8ef0b3140a7d1d.png',
 				topDisList: [],
@@ -115,8 +124,11 @@
 				followUserPost: [],
 				joinTopicPost: [],
 				lastPost: [],
-				tabList: [{
-					name: '最新'
+				tabList: [],
+				// classList:[],
+				classList:[{
+					name: '最新',
+					id:0
 				}],
 				current: 0,
 				joinTopicList: [],
@@ -135,52 +147,84 @@
 				indexStyle3: '0',
 				vipShow: '0',
 				uid: 0,
-				topicName: '暂未加入',
+				topicName: '哒哒校园官方',
 				isJoin:null,
-				openPop:false
+				openPop:false,
+				swiperList:[],
+				isRefresh:false
 			};
 		},
 		computed: {
-			...mapGetters(['messegeNum'])
+			...mapGetters(['messegeNum','topic'])
 		},
 		onShareAppMessage(res) {
 			return {
 				title: this.$c.miniappName,
-				path: '/pages/index/index',
+				path: `/pages/index/index?formId=${this.uid}`,
 				imageUrl: this.shareCover
 			};
 		},
+		onShareTimeline(res) {
+			return {
+				title: this.$c.miniappName,
+				query: `formId=${this.uid}`,
+				imageUrl: this.shareCover
+			}
+		},
 		async onLoad(option) {
-			await this.$onLaunched
-
+			await this.$onLaunched;
 			this.uid = uni.getStorageSync('userInfo').uid;
-			// 获取当前会员的母星
-			this.$H.get('topic/getParent/' + this.uid).then(res => {
-				if (res.result == '' || res.result == null) {
-					uni.navigateTo({
-						url: '/pages/login/parent'
-					})
-				} else {
-					uni.setStorageSync('topicId', res.result.topicId)
-					this.toppicDetail(res.result.topicId)
-				}
-			});
+			console.log('option',option)
+			
+			if(option.formId){
+				this.$store.commit('SET_FORMID',option.formId)
+				this.$H.post(`point/task/complete/${option.formId}?alreadyNum=1&type=invite_new`).then(res => {
+					console.log('----res',res)
+				})
+				this.$H.get("user/userInfo").then(res => {
+					if(res.code != 0){
+						this.$f.toast('限时任务需要先完成实名认证，请去实名认证')
+						uni.navigateTo({
+							url:`/pages/user/edit-info/edit`
+						})
+					}
+				})
+				
+			}
+			
 			this.getSysInfo();
 			this.getLastPost();
 			this.getAdConfig();
-			console.log('uni.$u.config.v', uni.$u.config.v);
+			this.getLinkList();
+			// this.getClassList();
+			
+			
 		},
 		onShow() {
 			this.navigationBarHeight = getApp().globalData.statusBarHeight;
 			this.statusBarHeight = getApp().globalData.statusBarHeight + getApp().globalData.navigationBarHeight;
-
+			
 			if (uni.getStorageSync('topicId')) {
 				this.toppicDetail(uni.getStorageSync('topicId'))
+				this.lastPost=[];
+				this.page=1;
+				this.getLastPost();
 				// 刷新数据
 			}
+			
+			// 获取当前会员的母星
+			// this.$H.get('topic/getParent/' + this.uid).then(res => {
+			// 	if (res.result == '' || res.result == null) {
+			// 		// uni.navigateTo({
+			// 		// 	url: '/pages/login/parent'
+			// 		// })
+			// 	} else {
+			// 		//uni.setStorageSync('topicId', res.result.topicId)
+			// 		//this.toppicDetail(res.result.topicId)
+			// 	}
+			// });
 		},
 		onReachBottom() {
-
 			this.page++;
 			if(this.current == 0){
 				this.getLastPost();
@@ -191,7 +235,6 @@
 
 		},
 		onPullDownRefresh() {
-
 			this.page = 1;
 			this.lastPost = [];
 			if(this.current == 0){
@@ -199,10 +242,80 @@
 			}else{
 				this.getTopPost(this.current);
 			}
-			
 			uni.stopPullDownRefresh();
 		},
 		methods: {
+			// 跳转搜索
+			getSearch(){
+				uni.navigateTo({
+					url: '/pages/search/search'
+				})
+			},
+			// 获取轮播图
+			getLinkList() {
+				this.$H.post('link/list', {
+						cateId: 0
+					})
+					.then(res => {
+						this.swiperList = res.result;
+					});
+			},
+			// 处理点击轮播图跳转
+			onSwiper(index) {
+				let link = this.swiperList[index];
+				console.log(link,'link====')
+				//跳转页面
+				if (link.type == 1) {
+					// #ifdef MP-WEIXIN
+					uni.navigateTo({
+						url: '/pages/webview/webview?src=' + link.url
+					});
+					// #endif
+			
+					// #ifdef H5
+					window.open(link.url)
+					// #endif
+					// #ifdef APP-PLUS
+					plus.runtime.openURL(link.url)
+					// #endif
+				}
+				//跳转其他小程序
+				if (link.type == 2) {
+					uni.navigateToMiniProgram({
+						appId: link.appid,
+						path: link.url
+					})
+				}
+			
+				//跳转小程序页面
+				if (link.type == 3) {
+					if (link.url == '/pages/index/index' || link.url == '/pages/square/square' || link.url == '/pages/my/my') {
+						uni.switchTab({
+							url: link.url
+						})
+					} else {
+						uni.navigateTo({
+							url: link.url
+						})
+					}
+				}
+			
+			},
+			getDiscuss(){
+				// discuss/list
+				this.$H.get('postCategory/list',{
+					page:1,
+					topicId:uni.getStorageSync('topicId')
+				}).then(res=>{
+					let classList=res.result.records.map(v=>({
+						name:v.name,
+						id:v.id,
+						topicId:v.topicId
+					}))
+					this.classList = this.classList.concat(classList);
+					console.log(res,this.classList,'==========postCategory')
+				})
+			},
 			addTopic(){
 				// 入住星球
 				this.openPop = true
@@ -218,6 +331,7 @@
 					if(res.code == 0){
 						this.$f.toast('入驻成功')
 						this.toppicDetail(uni.getStorageSync('topicId'))
+						this.getLastPost()
 						this.openPop = false
 					}else{
 						this.openPop = false;
@@ -236,22 +350,29 @@
 					id: id
 				}).then(res => {
 					this.topicName = res.result.topicName;
-					this.tabList = [{
-						name: '最新'
+					this.classList=[],
+					this.classList = [{
+						name: '最新',
+						id:0
 					}];
 					this.isJoin = res.result.isJoin;
-					res.result.postCategoryList.forEach(v => {
-						let array = {};
-						array.name = v.name;
-						array.topicId = v.topicId;
-						array.id = v.id;
-						this.tabList.push(array)
-
-					})
+					if(res.result.discussList.lenght<=0){
+						res.result.discussList=this.classList
+					}else{
+						// postCategoryList
+						res.result.discussList.forEach(v => {
+							let array = {};
+							array.name=v.title
+							// array.name = v.name;
+							array.topicId = v.topicId;
+							array.id = v.id;
+							this.classList.push(array)
+						})
+					}
+					console.log(this.classList,res.result.discussList,'this.tabList====1')
 				});
 			},
 			refresh() {
-
 				this.page = 1;
 				this.lastPost = [];
 				if(this.current == 0){
@@ -264,14 +385,14 @@
 			},
 
 
-			tabChange(index) {
-				console.log('index:', index)
+			tabChange(index ) {
+				console.log('index:',index)
 				this.current = index;
 				this.followUserPost = [];
 				this.joinTopicList = [];
 				this.lastPost = [];
 				this.joinTopicPost = [];
-
+				
 				// if (index === 2) {
 				this.page = 1;
 
@@ -313,14 +434,20 @@
 			// 获取不同话题的帖子
 			getTopPost(index) {
 				this.loadStatus = 'loading';
-				let id = this.tabList[index].id;
-				let topId = this.tabList[index].topicId;
+				console.log(index,this.tabList,'this.tabList======')
+				let id = this.classList[index].id;
+				// let dicId=this.classList[index].dicId
+				let topId = this.classList[index].topicId;
+				// post/list   postCategory/info/{id}
 				this.$H.post('post/list', {
 					page: this.page,
-					postCategoryId:id,
-					topicId:topId
+					disId:id,
+					// postCategoryId:id,
+					topicId:topId,
+					
 				}).then(res => {
 					this.lastPost = this.lastPost.concat(res.result.data);
+					console.log(res,'=this.lastPostthis.lastPost')
 					if (res.result.current_page >= res.result.total || res.result.last_page === 0) {
 						this.loadStatus = 'nomore';
 					} else {
@@ -331,10 +458,15 @@
 			//获取最新帖子
 			getLastPost() {
 				this.loadStatus = 'loading';
-				this.$H.get('post/lastPost', {
-					page: this.page
+				let order = 'id desc';
+				// post/lastPost
+				this.$H.post('post/list', {
+					page: this.page,
+					topicId: uni.getStorageSync('topicId'),
+					order:order
 				}).then(res => {
 					this.lastPost = this.lastPost.concat(res.result.data);
+					console.log(this.lastPost,'刷新this.lastPost====')
 					if (res.result.current_page >= res.result.total || res.result.last_page === 0) {
 						this.loadStatus = 'nomore';
 					} else {
@@ -380,13 +512,33 @@
 	    background:  $bg-color-base;
 		min-height: 100vh;
 	}
+	.swiper-box {
+		padding: 20rpx;
+	}
 	// .lf-nav {
 	// 	background-color: #070042;
 	// 	position: fixed;
 	// 	top: 0;
 	// 	z-index: 999;
 	// }
-
+	.search{
+		display: flex;
+		align-items: center;
+		margin: 0 auto;
+		padding:0 30rpx;
+		 width: 702rpx;
+		 line-height: 72rpx;
+		height: 72rpx;
+		background: #7762EC;
+		border-radius: 36rpx 36rpx 36rpx 36rpx;
+		.searchTitle{
+			font-size: 28rpx;
+			color: #FFFFFF;
+			font-weight: 400;
+			color: #C1C0FA;
+			margin-left: 10rpx;
+		}
+	}
 	.lf-all {
 		display: flex;
 		flex-direction: column;
@@ -407,7 +559,7 @@
 	}
 
 	.lf-tab-con {
-		width: 500rpx;
+		width: 98%;
 	}
 
 	.lf-vip {
@@ -471,7 +623,6 @@
 		color: #616161;
 		display: flex;
 		font-size: 28rpx;
-
 		.right {
 			margin-left: auto;
 			color: #333;

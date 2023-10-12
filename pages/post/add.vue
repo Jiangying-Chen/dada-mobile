@@ -14,7 +14,7 @@
 					</view>
 				</view>
 				<view class="content">
-					<input class="txt" type="text" placeholder="起个标题叭~" maxlength="20" v-model="form.title">
+					<input class="txt1" type="text" placeholder="起个标题叭~" maxlength="20" v-model="form.title" placeholder-style="font-size:14px">
 				</view>
 				<!-- <u-line margin="25rpx 0 0 0" length="690rpx" color="#F6F6F6"></u-line> -->
 			</view>
@@ -30,8 +30,8 @@
 					</view>
 				</view>
 				<view class="content">
-					<textarea placeholder="说些什么叭..." class="txt input-text post-txt" maxlength="1000" :auto-height="true"
-						v-model="form.content"></textarea>
+					<textarea placeholder="说些什么叭..." class="txt1 input-text1 post-txt1" maxlength="1000" :auto-height="true"
+						v-model="form.content" placeholder-style="font-size:14px"></textarea>
 				</view>
 				<!-- <u-line length="690rpx" color="#F6F6F6" margin="20rpx 0 32rpx 0"></u-line> -->
 			</view>
@@ -57,17 +57,48 @@
 				<video v-if="form.media.length > 0" @click="chooseVideo" :controls="false" :show-center-play-btn="false" class="upload-video" :src="form.media[0]"></video>
 			</block>
 			<!-- 选择星球-->
-			<navigator v-if="isTopic" url="/pages/topic/choose-topic/choose-topic" class="choose-item">
-				<image class="icon" src="/static/p_1.png"></image>
+			<view class="one-line" style="margin-top: 38rpx;">
+				<view class="top">
+					<view class="title">
+						当前星球
+					</view>
+					<!-- <view class="num">
+						{{form.content.length}}/400
+					</view> -->
+				</view>
+				<view class="content">
+					{{topicName ||''}}
+					<!-- <textarea placeholder="说些什么叭..." class="txt1 input-text1 post-txt1" maxlength="1000" :auto-height="true"
+						v-model="form.content"></textarea> -->
+				</view>
+				<!-- <u-line length="690rpx" color="#F6F6F6" margin="20rpx 0 32rpx 0"></u-line> -->
+			</view>
+			<!-- <view>{{ topicName }}</view> -->
+			<!-- <navigator v-if="isTopic" url="/pages/topic/choose-topic/choose-topic" class="choose-item">
+				<image class="icons" src="/static/p_1.png"></image>
 				<text class="txt">{{ topicName }}</text>
 				<u-icon class="u-icon" name="arrow-right"></u-icon>
-			</navigator>
+			</navigator> -->
+			
 			<!-- 选择话题 -->
 			<navigator v-if="form.topicId" :url="'/pages/discuss/choose-discuss/choose-discuss?topicId=' + form.topicId" class="choose-item">
 				<image class="icon" src="/static/m_1.png"></image>
-				<text class="txt">{{ disName }}</text>
+				<text class="txt txt-l" v-if="disName=='选择话题'">选择话题</text>
+				<text class="txt" v-else>{{ disName }}</text>
 				<u-icon class="u-icon" name="arrow-right"></u-icon>
 			</navigator>
+			
+			<!-- @好友 -->
+			<view class="choose-item" @click="toNavChoose">
+				<image class="icon" src="/static/m_1.png"></image>
+				<text class="txt txt-l" v-if="callList.length==0">选择好友</text>
+				<text class="txt" v-else>
+					{{friendStr}}
+				</text>
+				<u-icon class="u-icon" name="arrow-right"></u-icon>
+			</view>
+			
+			
 			<!-- 帖子类型 -->
 			<!-- <view class="choose-item">
 				<image class="icon" src="/static/m_3.png"></image>
@@ -131,8 +162,10 @@ export default {
 		return {
 			navigationBarHeight: 0,
 			statusBarHeight: 0,
+			
 			uploadImgUrl: this.$c.domain + 'common/upload',
-			topicName: '选择星球',
+			// topicName: '选择星球',
+			topicName:'',
 			disName: '选择话题',
 			typeName: '普通贴',
 			form: {
@@ -165,16 +198,54 @@ export default {
 		  ],
 		  // u-radio-group的v-model绑定的值如果设置为某个radio的name，就会被默认选中
 		  radiovalue1: '普通贴',
+		  callList:[],
+		  
+		  uid:'',
+		  avatar:'',
+		  username:'',
+		  friendStr:'',
+		  
 		};
 	},
 	components: {
 		hTips,topNave
 	},
+	onShow() {
+		if(uni.getStorageSync('callFriendList')){
+			this.callList = JSON.parse(uni.getStorageSync('callFriendList'));
+			console.log('this.callList',this.callList)
+			this.friendStr = this.callList.map(v=>v.notation).join(',');
+			console.log('this.friendStr',this.friendStr)
+		}
+		
+		
+		if(uni.getStorageSync('topicId')){
+			this.form.topicId=uni.getStorageSync('topicId')
+		}
+		
+		console.log(uni.getStorageSync('topicId'),'=uni.getStorageSync')
+		this.toppicDetail(uni.getStorageSync('topicId'))
+		
+	},
 	onLoad(options) {
 		this.navigationBarHeight = getApp().globalData.statusBarHeight;
 		this.statusBarHeight = getApp().globalData.statusBarHeight + getApp().globalData.navigationBarHeight;
 		this.form.type = options.type;
-
+		
+		if(uni.getStorageSync('userInfo').uid){
+			this.uid = uni.getStorageSync('userInfo').uid;
+			this.avatar= uni.getStorageSync('userInfo').avatar;
+			this.username= uni.getStorageSync('userInfo').username;
+		}else{
+			uni.navigateTo({
+				url:'/pages/user/login'
+			})
+		}
+        try {
+        	uni.removeStorageSync('callFriendList');
+        } catch (e) {
+        	// error
+        }
 		if (options.isTopic) {
 			this.isTopic = options.isTopic;
 		}
@@ -187,12 +258,47 @@ export default {
 			this.form.discussId = options.discussId;
 			this.disName=options.disName
 		}
+		
+		
+		// this.$H.get("user/userInfo").then(res => {
+		// 		this.uid = res.result.uid;
+		// 		this.$H.get('topic/getParent/' + this.uid).then(res => {
+		// 			console.log(res,'获取当前母星==')
+		// 			this.toppicDetail(res.result.topicId)
+		// 			this.form.topicId=res.result.topicId;
+		// 		})
+		// 	})
 
 		let location = uni.getStorageSync('location_info');
 		this.form.longitude = location.longitude;
 		this.form.latitude = location.latitude;
+		
+		
+		
 	},
 	methods: {
+		//选择好友
+		toNavChoose(){
+			let ids = this.callList.map(v=>v.friend_id).toString();
+			console.log('ids',ids)
+			uni.navigateTo({
+				url:`/pages/message/chooseFriend?ids=${ids}`
+			})
+		},
+		
+		// 获取当前母星详情
+		toppicDetail(id) {
+			this.$H.get('topic/detail', {
+				id: id
+			}).then(res => {
+				if(res.code==500){
+					this.topicName ='';
+				}else{
+					this.topicName = res.result.topicName;
+				}
+			});
+			
+		},
 		inputChange(n){
 		},
 	    groupChange(n) {
@@ -319,6 +425,9 @@ export default {
 				mask: true,
 				title: '发布中'
 			});
+			
+			// postCategoryList
+			console.log(this.form,'from====')
 			this.$H.post('post/addPost', this.form).then(res => {
 				if (res.code == 0) {
 					uni.redirectTo({
@@ -328,6 +437,7 @@ export default {
 				uni.hideLoading();
 			});
 		},
+		//发布按钮
 		submit(e) {
 			uni.showLoading({
 				mask: true,
@@ -338,23 +448,73 @@ export default {
 			e.forEach(function(item, index) {
 				mediaList.push(item.response.result);
 			});
-
 			this.form.media = mediaList;
-
+			let list = this.callList.map(v=>({
+				friend_id:v.friend_id,
+				notation:v.notation
+			}))
+			this.form.atFriendList = JSON.stringify(list);
+			
 			this.$H.post('post/addPost', this.form).then(res => {
 				if (res.code == 0) {
+					this.callList.forEach(v=>{
+						this.sendMessage(v.friend_id,res.result)
+					})
+					try {
+						uni.removeStorageSync('callFriendList');
+					} catch (e) {
+						// error
+					}
+					
 					uni.redirectTo({
 						url: '/pages/post/detail?id=' + res.result
 					});
+					this.form={};
 				}
 				uni.hideLoading();
 			});
+		},
+		//发送信息
+		sendMessage(friend_id,postId){
+			let m = {
+				senderId: this.uid,
+				senderName: this.username,
+				senderAvatar: this.avatar,
+				receiverId: friend_id,
+				notation: '',
+				applyMessage: '',
+				postId:postId,
+			}
+			let msg = {
+				type: 'at-friend',
+				data: m
+			}
+			let that = this
+			uni.sendSocketMessage({
+				data: JSON.stringify(msg),
+				success() {
+					uni.showToast({
+						icon: 'success',
+						title: '发送成功'
+					})
+				},
+				fail(res) {
+					uni.showToast({
+						icon: 'none',
+						title: '发送失败,请重试'
+					})
+					websocket.initConnect()
+				}
+			})
 		}
 	}
 };
 </script>
 
 <style lang="scss" scoped>
+.txt-l{
+	color: $text-color-light;
+}
 .container {
 	padding: 20rpx;
 	overflow: scroll;
@@ -400,14 +560,14 @@ export default {
 	display: flex;
 	align-items: center;
 	padding: 20rpx;
-	border-bottom: 1px solid #F5F5F5;
+	border-bottom: 1px solid $border-color;
 	&:last-child{
 		border: 0;
 	}
 	.txt{
 		margin-left: 20rpx;
 		font-size: 30rpx;
-		color: rgba(255,255,255,0.8);
+		//color: rgba(255,255,255,0.8);
 	}
 	.sw{
 		margin-left: 300rpx;
@@ -461,6 +621,7 @@ export default {
 			border-radius: 8px;
 			background: $bg-color-light;
 			padding: 8px;
+			font-size: 28rpx;
 			.txt {
 				font-size: 30rpx;
 				color: $text-color-light;

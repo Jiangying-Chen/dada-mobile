@@ -1,5 +1,5 @@
 <template>
-	<view style="position: relative;background: #090C17;">
+	<view style="position: relative;background: #090C17;height: 100vh;">
 		<top-nave :bar-height="statusBarHeight" :nav-height="navigationBarHeight" title="矿产" :isback="true"></top-nave>
 		<view class="titles">
 			好友矿区
@@ -15,56 +15,56 @@
 			</view>
 		</scroll-view>
 		<view class="minerals">
-			<image src="https://mallwj.hm-myy.cn/168992259982520230721145639.png" mode="widthFix"></image>
+			<image src='https://mallwj.hm-myy.cn/169286377746220230824155617.png' mode="widthFix" style="width: 750rpx; height: 768rpx;"></image>
 			<view class="uni-flex uni-row mineralstop" style="justify-content: space-between;">
 				<view class="fontbox">
 					<span style="color: #FFDA44;">{{name}}</span>的矿区
 				</view>
 				
 			</view>
-			<view class="minerals-po" style="left: 20px;bottom: 28px;" v-if="mineral[0].isShow == true"
+			<!-- <view class="minerals-po" style="left: 20px;bottom: 28px;" v-if="mineral[0].isShow == true"
 				@tap="getMineral(mineral[0])">
 				<image :src="mineral[0].data.image" mode=""></image>
 				<view class="titlename">
 					{{mineral[0].data.mineralName}}
 				</view>
-			</view>
-			<view class="minerals-po" style="left: 72px;bottom: 59px;" v-if="mineral[1].isShow == true"
+			</view> -->
+			<view class="minerals-po" style="left: 0;bottom: 400rpx;" v-if="mineral[1].isShow == true"
 				@tap="getMineral(mineral[1])">
 				<image :src="mineral[1].data.image" mode=""></image>
 				<view class="titlename">
 					{{mineral[1].data.mineralName}}
 				</view>
 			</view>
-			<view class="minerals-po" style="left: 103px;bottom: 115px;" v-if="mineral[2].isShow == true"
+			<view class="minerals-po" style="left: 0;bottom: 25rpx;" v-if="mineral[2].isShow == true"
 				@tap="getMineral(mineral[2])">
 				<image :src="mineral[2].data.image" mode=""></image>
 				<view class="titlename">
 					{{mineral[2].data.mineralName}}
 				</view>
 			</view>
-			<view class="minerals-po" style="left: 159px;bottom: 133px;" v-if="mineral[3].isShow == true"
+			<view class="minerals-po" style="left: 130rpx;bottom: 300rpx;" v-if="mineral[3].isShow == true"
 				@tap="getMineral(mineral[3])">
 				<image :src="mineral[3].data.image" mode=""></image>
 				<view class="titlename">
 					{{mineral[3].data.mineralName}}
 				</view>
 			</view>
-			<view class="minerals-po" style="right: 114px;bottom: 0px;" v-if="mineral[4].isShow == true"
+			<view class="minerals-po" style="right: 36rpx;bottom:380rpx;" v-if="mineral[4].isShow == true"
 				@tap="getMineral(mineral[4])">
 				<image :src="mineral[4].data.image" mode=""></image>
 				<view class="titlename">
 					{{mineral[4].data.mineralName}}
 				</view>
 			</view>
-			<view class="minerals-po" style="right: 90px;bottom: 64px;" v-if="mineral[5].isShow == true"
+			<view class="minerals-po" style="right:8rpx;bottom: 62rpx;" v-if="mineral[5].isShow == true"
 				@tap="getMineral(mineral[5])">
 				<image :src="mineral[5].data.image" mode=""></image>
 				<view class="titlename">
 					{{mineral[5].data.mineralName}}
 				</view>
 			</view>
-			<view class="minerals-po" style="right: 29px;bottom: 54px;" v-if="mineral[6].isShow == true"
+			<view class="minerals-po" style="right:130rpx;bottom: 140rpx;" v-if="mineral[6].isShow == true"
 				@tap="getMineral(mineral[6])">
 				<image :src="mineral[6].data.image" mode=""></image>
 				<view class="titlename">
@@ -77,30 +77,38 @@
 		<u-popup v-model="isShowTs" mode="center" border-radius="18">
 			<view class="infobox">
 				<view class="infobox-title">
-					提示
+					矿石采集
 				</view>
 				<view class="infobox-contact">
-					<view class="infobox-font">
-						当前矿石：{{nowMineral.data.mineralName}}
-					</view>
-					<view class="infobox-font">
-						可采集数量：{{nowMineral.data.mineralNum}}
+					<view class ='flex-class'>
+						<view>
+							<image :src="nowMineral.data.image" mode="widthFix"  class="ks-img"></image>
+						</view>
+						<view>
+							<view>
+								{{nowMineral.data.mineralName}}
+							</view>
+							<view class="infobox-font">
+							 	可采集数量：{{nowMineral.data.mineralNum}}
+							 </view> 
+						</view>
 					</view>
 					
 					<view class="infobox-font uni-flex uni-row">
-						<view class="">
-							采集数量：
+						<view style="margin-right: 30rpx;">
+							采集数量
 						</view>
 						<view class="uni-flex uni-row">
-							<view class="opt-btn" @tap="delMineral()">
-								<image src="https://mallwj.hm-myy.cn/169104455360720230803143553.png" mode=""></image>
+							1个
+							<!-- <view class="opt-btn" @tap="delMineral()">
+								<image src="https://mallwj.hm-myy.cn/169287337951120230824183619.png" mode=""></image>
 							</view>
 							<view class="">
 								<input type="number" v-model="toGetMineralNum" class="numberinput" @blur="sureNumber"/>
 							</view>
 							<view class="opt-btn" @tap="addMineral()">
-								<image src="https://mallwj.hm-myy.cn/169104455361520230803143553.png" mode=""></image>
-							</view>
+								<image src="https://mallwj.hm-myy.cn/169287336154120230824183601.png" mode=""></image>
+							</view> -->
 						</view>
 					</view>
 					<view class="infobox-btn uni-flex uni-row" style="justify-content: space-between;">
@@ -168,6 +176,7 @@
 			...mapGetters(['friendListShow', 'friendList'])
 		},
 		onLoad(options) {
+			console.log('options',options)
 			let _this = this;
 			this.navigationBarHeight = getApp().globalData.statusBarHeight;
 			this.statusBarHeight = getApp().globalData.statusBarHeight + getApp().globalData.navigationBarHeight;
@@ -261,7 +270,7 @@
 				let _this = this;
 				this.$H.get("mineral/steal/" + _this.nowMineral.data.mineralId, {
 					uid: _this.peopleUid,
-					num: _this.toGetMineralNum,
+					num: 1, //_this.toGetMineralNum,
 					friendUid:_this.uid
 				}).then(res => {
 					// 随机数
@@ -299,39 +308,54 @@
 		},
 	};
 </script>
-
-<style scoped lang="less">
+<style lang="scss">
+	page {
+	  width: 100%;
+	  overflow-x: hidden;
+	}
+</style>
+<style scoped lang="scss">
+.infobox{
+	.flex-class{
+		display: flex;
+		align-items: center;
+	}
+	.ks-img{
+		background: #000000;
+		width:160rpx;
+		height: 160rpx;
+		border: 2rpx solid #0180FF;
+		margin-right: 24rpx;
+		margin-bottom: 20rpx;
+	}
+}	
+	
 	.titles{
 		font-size: 16px;
-		// font-family: Source Han Sans CN-Bold, Source Han Sans CN;
 		font-weight: bold;
-		color: #FFFFFF;
+		color: #fff;
 		margin: 12px 12px;
 	}
 	// 提示框
 	.infobox {
-		width: 280px;
-		background: #06407A;
-		box-shadow: 0px 0px 16px 0px rgba(0, 102, 255, 0.4);
-
-		// border-radius: 9px 9px 9px 9px;
+		width: 560rpx;
+		background: $bg-color-black;
+		box-shadow: 0px 0px 16px 0px $bg-color-light;
+        color: $text-color-white;
 		.infobox-title {
-			padding: 13px 0 17px;
-			font-size: 18px;
-			font-weight: bold;
-			color: #FFFFFF;
+			padding: 26rpx;
+			font-size: 16px;
+			color: $text-color-white;
 			text-align: center;
 			border-bottom: 1px solid #000000;
 		}
-
 		.infobox-contact {
-			padding: 27px 12px;
+			padding: 36rpx;
 		}
 
 		.infobox-font {
 			font-size: 14px;
-			color: #FFFFFF;
-			// text-align: center;
+			color: $text-color-white;
 			padding: 8px 0;
 			.opt-btn{
 				width: 30px;
@@ -348,7 +372,7 @@
 				    padding: 3px 0;
 				    margin: 0 10px;
 				    background: #001338;
-				    border: 1px solid #03D7FC;
+				    border: 1px solid $btn-base;
 				    border-radius: 5px;
 			}
 		}
@@ -362,8 +386,8 @@
 				padding: 11px 0;
 				font-size: 14px;
 				font-weight: 500;
-				color: #FFFFFF;
-				background: #001422;
+				color: $text-color-white;
+				background: #020014;
 				border-radius: 20px;
 			}
 
@@ -373,8 +397,8 @@
 				padding: 11px 0;
 				font-size: 14px;
 				font-weight: 500;
-				color: #06407A;
-				background: linear-gradient(180deg, #03D7FC 0%, rgba(3, 215, 252, 0.55) 100%);
+				color: $text-color-white;
+				background: linear-gradient(180deg, #8B54FF 0%, #6322EF 100%);
 				border-radius: 20px;
 			}
 		}
@@ -411,7 +435,6 @@
 
 			.mineralsimage {
 				background: #2A385C;
-				// border: 0.2px solid #1264DF;
 				margin: 4px 5px 0;
 				position: relative;
 
@@ -480,8 +503,8 @@
 			width: 60px;
 
 			image {
-				width: 42px;
-				height: 42px;
+				width: 150rpx;
+				height: 150rpx;
 				margin: 0 9px;
 			}
 
@@ -502,8 +525,8 @@
 
 	.peopleview {
 		white-space: nowrap;
-		width: 100%;
-		margin: 0px 12px;
+		width: 96%;
+		margin: 0px 2%;
 		padding:10px 0 37px ;
 
 		.peoplebox {

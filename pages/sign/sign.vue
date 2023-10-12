@@ -230,8 +230,9 @@
 	.font-color-red {
 	  color: #64B5F6 !important;
 	}
+	// $btn-light
 	.bg-color-blue {
-	  background-color: #64B5F6 !important;
+	  background-color: #7F7DEB !important;
 	}
 	.icon-color {
 	  color: #64B5F6;

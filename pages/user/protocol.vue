@@ -19,16 +19,26 @@
 			if(options.type){
 				this.type=options.type;
 			}
-			if(this.type=='app_privacy_agreement'){
-				this.getPrivacyAgreement()
-			}else if(this.type=='app_protocol_context'){
-				this.getProtocolContext()
-			}else if(this.type=='app_vip_recharge_context'){
-				this.getVipRechargeContext()
+			// if(this.type=='app_privacy_agreement'){
+			// 	this.getPrivacyAgreement()
+			// }else if(this.type=='app_protocol_context'){
+			// 	this.getProtocolContext()
+			// }else if(this.type=='app_vip_recharge_context'){
+			// 	this.getVipRechargeContext()
+			// }
+			if(this.type=='protocol'){
+				this.getProtocol()
 			}
+			
 			
 		},
 		methods:{
+			getProtocol(){
+				this.$H.get('system/getSetting/protocol').then(res => {
+					console.log('res',res)
+					this.content = res.result;
+				});
+			},
 			getProtocolContext(){
 				this.$H.get('system/protocol').then(res => {
 					this.content = res.result;
@@ -50,8 +60,10 @@
 	}
 </script>
 
+
 <style scoped>
 	#text{
 		padding: 40rpx;
+		background-color: #fff;
 	}
 </style>

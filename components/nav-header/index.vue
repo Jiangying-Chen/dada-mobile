@@ -1,11 +1,13 @@
 <template>
   <view class="top-nav-bg" :style="{height:barHeight +'px'}">
     <image src="../../static/topbg.png"  style="width: 100%;height: 100%;"></image>
-	<view class="top-title" :style="{top:navHeight + 5 +'px'}">
+	<view class="top-title" :style="{top:navHeight + 5 +'px',color:titleColor}">
 		{{title}}
 	</view>
-	<image src="../../static/new/left.png" :style="{top:navHeight + 10 +'px'}" class="backbtn" mode="" @tap="backTo()" v-if="isback == true"></image>
-	
+	<view v-if="isback == true">
+		<image v-if="titleColor=='#FFFFFF'" src="../../static/new/left.png" :style="{top:navHeight + 10 +'px'}" class="backbtn" mode="" @tap="backTo()" ></image>
+		<image v-else src="../../static/new/leftB.png" :style="{top:navHeight + 10 +'px'}" class="backbtn" mode="" @tap="backTo()"></image>
+	  </view>
   </view>
 </template>
 
@@ -28,6 +30,10 @@
 		isback:{
 			type:Boolean,
 			default:false
+		},
+		titleColor:{
+			Type:String,
+			default:'#FFFFFF'
 		}
     },
     methods: {
@@ -62,6 +68,6 @@
 	  width: 100%;
 	  font-size: 17px;
 	  font-weight: 500;
-	  color: #FFFFFF;
+	  //color: #FFFFFF;
   }
 </style>

@@ -8,11 +8,11 @@
     "app-plus" : {
         "nvueCompiler" : "uni-app",
         "compilerVersion" : 3,
-		"safearea":{
-			"bottom":{
-				"offset":"auto"
-			}
-		},
+        "safearea" : {
+            "bottom" : {
+                "offset" : "auto"
+            }
+        },
         "modules" : {
             "VideoPlayer" : {},
             "Payment" : {}

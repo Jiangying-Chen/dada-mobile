@@ -1,5 +1,5 @@
 <template>
-	<view v-if="visibleSync" :style="[customStyle, {
+	<view v-if="visibleSync" :style="[customStyle,{
 		zIndex: uZindex - 1
 	}]" class="u-drawer" hover-stop-propagation>
 		<u-mask :duration="duration" :custom-style="maskCustomStyle" :maskClickAble="maskCloseAble" :z-index="uZindex - 2" :show="showDrawer && mask" @click="maskClick"></u-mask>
@@ -16,7 +16,7 @@
 			@tap.stop.prevent
 			:style="[style]"
 		>
-			<view class="u-mode-center-box" @tap.stop.prevent @touchmove.stop.prevent v-if="mode == 'center'" :style="[centerStyle]">
+			<view class="u-mode-center-box" @tap.stop.prevent @touchmove.stop.prevent v-if="mode == 'center'" :style="[centerStyle,bgColor]">
 				<u-icon
 					@click="close"
 					v-if="closeable"
@@ -119,6 +119,12 @@ export default {
 			type: Object,
 			default() {
 				return {};
+			}
+		},
+		bgColor:{
+			type: Object,
+			default() {
+				return { background: '#fff'};
 			}
 		},
 		value: {

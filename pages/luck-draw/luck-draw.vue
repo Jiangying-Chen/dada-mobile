@@ -1,7 +1,7 @@
 <template>
 	<view class="luckly-wheel-container">
 		<view class="header">
-			<image src="/static/images/choujiang_bg.png"></image>
+			<image src="https://xiaoyuan.pujinetwork.com/bbs/20230825/a5c5b0e7066b46b4b035195cd0f47ec0.png"></image>
 		</view>
 		<view class="main">
 			<view class="row-end">
@@ -28,7 +28,7 @@
 						</view>
 					</view>
 					<view class="wheel">
-						<my-lottery :lotteryData="lists" :status="status" :luckyOrder="3" :circleTimes="30" @begin="startLottery" @finish="lotteryFinish"></my-lottery>
+						<luckDraw :lotteryData="lists" :status="status" :luckyOrder="3" :circleTimes="30" @begin="startLottery" @finish="lotteryFinish"></luckDraw>
 					</view>
 					<view class="rules-box">
 						<view class="lg" style="color: #FCD7D2;margin-bottom: 30rpx;">活动规则</view>
@@ -63,6 +63,9 @@
 	
 	import luckDraw from "../../components/my-lottery/my-lottery.vue"
 	export default {
+		components: {
+			luckDraw
+		},
 		data() {
 			return {
 				status:'',
@@ -103,6 +106,7 @@
 									this.rule=rule;
 									this.status=status;
 									this.lists = list;
+									console.log(this.lists,'this.lists==')
 									this.record = record;
 									this.surplus = surplus;
 									this.integral=integral;
@@ -225,13 +229,13 @@
 	}
 
 	.luckly-wheel-container {
-		background-color: #FFFFFF;
+		// background-color: $bg-color-base;
+		background-color: #fff;
 		padding-bottom: 20rpx;
 
 		.header {
 			width: 100%;
 			height: 1108rpx;
-
 			image {
 				width: 100%;
 				height: 100%;

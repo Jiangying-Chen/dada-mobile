@@ -1,31 +1,43 @@
 <script>
-	//import websocket from '@/utils/websocket.js';
+    import websocket from '@/utils/websocket.js';
 	import $store from '@/store/index.js';
 	export default {
 		onLaunch: function() {
 			uni.hideTabBar();
-			const updateManager = uni.getUpdateManager();
-			updateManager.onCheckForUpdate(function(res) {
-				// 请求完新版本信息的回调
-			});
-
-			updateManager.onUpdateReady(function(res) {
-				uni.showModal({
-					title: '更新提示',
-					content: '新版本已经准备好，是否重启应用？',
-					success(res) {
-						if (res.confirm) {
-							// 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
-							updateManager.applyUpdate();
-						}
+			
+			let startParamObj = wx.getLaunchOptionsSync();
+			if(wx.canIUse('getUpdateManager')&& startParamObj.scene!=1154){
+				const updateManager = uni.getUpdateManager();
+				updateManager.onCheckForUpdate(function(res) {
+					// 请求完新版本信息的回调
+					if(res.hasUpdate){
+					  updateManager.onUpdateReady(function(){
+						wx.showModal({
+						  title:'更新提示',
+						  content:'新版本已经下载好，是否重启当前应用？',
+						  success(res){
+							if(res.confirm){
+							  updateManager.applyUpdate()
+							}
+						  }
+						})
+					  })
+					  updateManager.onUpdateFailed(function (){
+						wx.showModal({
+						  title:'发现新版本',
+						  content:'请删除当前小程序，重启搜索打开...',
+						})
+					  })
 					}
-				});
-
-			});
-
-			updateManager.onUpdateFailed(function(res) {
-				// 新的版本下载失败
-			});
+				})
+			}else{
+			      // wx.showModal({
+			      //   title:'更新提示',
+			      //   content:'当前微信版本过低，无法使用该功能，请升级到最新微信版本后重试',
+			      // })
+			     // return
+			}
+			
 			// 状态栏高度
 			this.globalData.statusBarHeight = uni.getSystemInfoSync().statusBarHeight
 			
@@ -43,12 +55,9 @@
 			this.$H.get('user/isOpen').then(res => {
 				this.globalData.isOpen=res.result;
 			});
+			
 			let that = this;
-			// 强制登录
-			uni.showLoading({
-				title: '正在登录中...',
-				mask: true,
-			});
+			that.$isResolve()
 			
 			uni.login({
 			  provider: 'weixin',
@@ -72,26 +81,48 @@
 							$store.state.loginUserInfo = res.result;
 							uni.setStorageSync("userInfo", res.result)
 							//连接websocket
-							//websocket.initConnect();
+							websocket.initConnect();
 							//获取好友列表
 							$store.dispatch('getFriendList');
 							///获取通知消息
 							$store.dispatch('getNoticeList');
 							uni.hideLoading();
-							that.$isResolve()
+							
 						})
 					}else if(res2.code==999){
-						// console.log('手机号待获取')
+						console.log('手机号未绑定')
+						uni.setStorageSync("hasLogin", false);
+						uni.setStorageSync("token", null);
+						$store.state.token = null;
+						uni.setStorageSync("userInfo", {})
+						
 						uni.hideLoading();
-						uni.navigateTo({
-							url:'/pages/login/login'
-						})
+						// uni.navigateTo({
+						// 	url:'/pages/user/login'
+						// })
+						
 						
 					}
 					
 				})
 			  }
 			});
+			
+			//获取任务列表
+			this.$H.get("point/task/getMyTaskList/" + $store.state.loginUserInfo.uid).then(res => {
+				console.log('----任务列表res',res)
+				if(res.code==0){
+					let result = res.result;
+					if(result.length>0){
+						//在线任务
+						this.globalData.onLineObj = result.filter(v=>v.type=='online')[0];
+						//邀请新人
+						this.globalData.newPeopleObj = result.filter(v=>v.type=='invite_new')[0];   //alreadyNum:1 ,
+						//黑洞助手提问
+						this.globalData.askObj = result.filter(v=>v.type=='black_hole_qa')[0]; 
+					}
+				}
+			})
 			
 		},
 		onShow: function() {
@@ -103,14 +134,40 @@
 			//#endif
 			if(uni.getStorageSync('hasLogin')){
 				//连接websocket
-				//websocket.initConnect();
+				websocket.initConnect();
 				//获取好友列表
 				$store.dispatch('getFriendList');
 				///获取通知消息
 				$store.dispatch('getNoticeList');
 			}
+			
+			
+			let starTime = new Date().getTime();
+			this.globalData.starTime = starTime;
+			console.log('this.globalData.starTime',this.globalData.starTime)
+			//pointTaskValue 分钟
+			if(this.globalData.onLineObj && this.globalData.onLineObj.taskStatus!='COMPLETED'){
+				console.log('this.globalData.onLineObj',this.globalData.onLineObj)  //this.globalData.onLineObj.pointTaskValue
+				let time = 5*60000;
+				let timer = setTimeout(()=>{
+						this.$H.post(`point/task/complete/-1?alreadyNum=5&type=online`).then(res => {
+							console.log('res',res)
+						})
+				},time)
+			    
+			}
+			
 		},
 		onHide: function() {
+			// if(this.globalData.onLineObj && this.globalData.onLineObj.taskStatus!='COMPLETED'){
+			// 	let lastTime = new Date().getTime()
+			// 	let onlineTime = Math.floor(Math.abs(lastTime-this.globalData.starTime)/60000);  //分钟
+				
+			// 	this.$H.post(`point/task/complete/-1?alreadyNum=${onlineTime}&type=online`).then(res => {
+			// 		console.log('res',res)
+			// 	})
+			// }
+			
 
 		},
 		globalData: {
@@ -118,6 +175,10 @@
 		  statusBarHeight: 0, // 状态导航栏高度
 		  navHeight: 0, // 总体高度
 		  navigationBarHeight: 0, // 导航栏高度(标题栏高度)
+		  starTime:0,
+		  onLineObj:{},
+		  newPeopleObj:{},
+		  askObj:{},
 		}
 	};
 </script>

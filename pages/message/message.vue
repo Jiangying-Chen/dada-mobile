@@ -6,20 +6,12 @@
 		</u-navbar>
 		<view v-if="pageCurrent == 0">
 			<!-- 消息列表 -->
-			<view class="list" style="background: none;">
-				<view class="flex_col" @longpress="onLongPress" :class="{'active':pickerUserIndex==index}" @tap="listTap(item)" v-for="(item,index) in sessionList"
+			<view class="list">
+				<view class="flex_col sixin" @longpress="onLongPress" :class="{'active':pickerUserIndex==index}" @tap="listTap(item)" v-for="(item,index) in sessionList"
 				 :key="index" :data-index="index">
 					<view class="avatar-container">
 						<image :src="item.avatar" mode="aspectFill" style="border-radius: 10%;"></image>
-						<!-- #ifdef H5 -->
-						<u-badge style="position: absolute;right: -10upx;top: -10upx;"  :count="item.unread"></u-badge>
-						<!-- #endif -->
-						<!-- #ifdef MP-WEIXIN -->
 						<u-badge class="msg-tag" :count="item.unread"></u-badge>
-						<!-- #endif -->
-						<!-- #ifdef APP-PLUS -->
-						<u-badge style="position: absolute;right: 20upx;top: 20upx;"  :count="item.unread"></u-badge>
-						<!-- #endif -->
 					</view>
 					<view class="flex_grow">
 						<view class="flex_col">
@@ -43,13 +35,14 @@
 					<view :key="index">
 						<u-index-anchor v-if="item.length!==0" :use-slot="true"><text
 								class="anchor-text">{{indexList[index]}}</text></u-index-anchor>
-						<view class="list" v-for="(item1, index1) in item" :key="index1">
+						<view class="list flex-box" v-for="(item1, index1) in item" :key="index1">
 							<view class="list__item" @tap="gotoFriendInfo(item1.id)">
 								<image class="list__item__avatar" :src="item1.url"></image>
 								<text
 									style="margin-left:30rpx;font-size: 36rpx;color: #2c2c2c;font-weight: 520;">{{item1.name}}</text>
 							</view>
-							<u-line></u-line>
+							<view @click='unfriend(item1)' class="un_btns">解除好友</view>
+							<!-- <u-line></u-line> -->
 						</view>
 					</view>
 				</template>
@@ -163,6 +156,19 @@
 			uni.stopPullDownRefresh();
 		},
 		methods: {
+			//解除好友
+			unfriend(item){
+				this.$H.delete(`friend/delete?friendId=${item.id}`).then(res=>{
+					console.log('res,,,',res)
+					if (res.code == 0) {
+						this.$f.toast('好友解除成功！')
+						$store.dispatch('getFriendList');
+						console.log('friendList',this.friendList)
+						
+					}
+				})
+			},
+			
 			timeShowFormat(time){
 				return timeUtil.timeShowFormat(timeUtil.getFormatTime(time));
 			},
@@ -310,10 +316,38 @@
 		}
 	};
 </script>
-
+<style>
+	page{
+		background-color: #fff;
+		color: #333;
+	}
+</style>	
 <style lang="scss" scoped>
 	@import url('@/static/css/navigate-bar.css');
-
+  .list{
+	  .sixin{
+		  //padding: 36upx 30upx;
+		  padding: 30rpx;
+	  }
+  }
+  
+ .flex-box{
+	 display: flex;
+	 justify-content: space-between;
+	 align-items: center;
+	 .un_btns{
+	 	  width: 152rpx;
+	 	  text-align: center;
+	 	  height: 56rpx;
+		  line-height: 56rpx;
+	 	  background: #333333;
+	 	  border-radius: 36rpx;
+	 	  font-size: 24rpx;
+	 	  font-weight: 400;
+	 	  color: #FFFFFF;
+		  margin-right: 50rpx;
+	 }
+ }
 	.msg-empty {
 		display: flex;
 		flex-direction: column;
@@ -390,7 +424,7 @@
 		align-items: center;
 		justify-content: space-between;
 		padding: 30rpx 0px;
-		border-bottom: 1rpx solid #EEEEEE;
+		//border-bottom: 1rpx solid #EEEEEE;
 	}
 
 	.message-line:last-of-type {
@@ -428,7 +462,7 @@
 	.message-text view:nth-child(1) text:nth-child(2) {
 		font-size: 20rpx;
 		font-weight: 300;
-		color: #FFFFFF;
+		color: #333;
 		height: 36rpx;
 		line-height: 36rpx;
 		border-radius: 18rpx;
@@ -502,7 +536,7 @@
 		-webkit-box-flex: 1;
 		-ms-flex-positive: 1;
 		flex-grow: 1;
-		color: #FFFFFF;
+		color: #333;
 	}
 	
 	.flex_row .flex_grow {
@@ -532,13 +566,13 @@
 		touch-callout: none;
 	
 		&>view {
-			padding: 36upx 30upx;
-			position: relative;
+			//padding: 36upx 30upx;
+			// position: relative;
 			
-			&:active,
-			&.active {
-				background-color: none;
-			}
+			// &:active,
+			// &.active {
+			// 	background-color: none;
+			// }
 			
 			.avatar-container{
 				height: 90upx;
@@ -555,13 +589,13 @@
 			}
 	
 			&>view {
-				line-height: 40upx;
+				//line-height: 40upx;
 	
 				.time,
 				.info {
 					font-size: 14px;
 					font-weight: 400;
-					color: rgba(255,255,255,0.8);
+					//color: rgba(255,255,255,0.8);
 					font-size: 24upx;
 				}
 	
@@ -585,7 +619,7 @@
 				content: '';
 				display: block;
 				height: 0;
-				border-top: #1F3A69 solid 1px;
+				//border-top: #1F3A69 solid 1px;
 				width: 620upx;
 				position: absolute;
 				top: -1px;

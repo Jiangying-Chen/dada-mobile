@@ -5,8 +5,9 @@
 				<view class="post-item">
 					<view class="post-item-top-user">
 						<view @click.stop="toUcenter(item.uid)">
-							<u-avatar class="avatar" :src="item.userInfo.avatar" :show-level='item.userInfo.type == 1'
-								level-bg-color="#8072f3"></u-avatar>
+							<u-avatar class="avatar" :src="item.userInfo.avatar" :show-level='item.userInfo.type == 1' 
+								></u-avatar>
+
 						</view>
 						<view class="center">
 							<view style="display: flex;align-items: center;">
@@ -44,8 +45,11 @@
 					<!-- <text class="discuss-title" :data-id="item.discussId" v-if="item.discussId > 0"
 						@tap.stop="toDiscuss">#{{ item.discussTitle }}</text> -->
 					<view class="post-content" v-if="item.type != 3">
-						<rich-text class="post-text" :nodes="item.content"></rich-text>
+						<view class="" style="font-weight: bold;"> {{item.title}}</view>
+						<!-- <u-parse :html="item.content"></u-parse> -->
+						<rich-text class="post-text" :nodes="item.content| formatRich"></rich-text>
 						<!-- 帖子类型 -->
+						<!--  -->
 						<block v-if="item.type == 1">
 							<!--一张图片-->
 							<block v-if="item.media.length == 1">
@@ -129,7 +133,7 @@
 						</view> -->
 						<view v-if="item.isCollection" class="p-item" @click.stop="cancelCollection(item.id,index)">
 							<u-icon name="thumb-up-fill" color="#6422EF"></u-icon>
-							<text class="count">{{ item.collectionCount }}</text>
+							<text class="count" style="color:#6422EF">{{ item.collectionCount }}</text>
 						</view>
 						<view v-if="!item.isCollection" class="p-item" @click.stop="addCollection(item.id,index)">
 							<u-icon name="thumb-up"></u-icon>
@@ -149,7 +153,7 @@
 		</block>
 		<block v-else>
 			<view style="margin: 30rpx 0;">
-				<u-loadmore :status="loadStatus" />
+				<u-loadmore :status="loadStatus" color='#ffffff'/>
 			</view>
 		</block>
 	</view>
@@ -195,6 +199,11 @@
 			      type: Boolean,
 			      default: false
 			},
+		},
+		filters: {
+			formatRich(val){
+				return "<div style='overflow : hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 4; -webkit-box-orient: vertical;word-break: break-all;'>" + val + "</div>"
+			}
 		},
 		data() {
 			return {
@@ -260,7 +269,6 @@
 				});
 			},
 			onActive(postInfo, index) {
-
 				this.showAction = true;
 				this.choosePost = postInfo;
 				this.chooseIndex = index;
@@ -274,6 +282,7 @@
 						key: 'delete'
 					});
 				} else {
+					
 					//圈子管理员或圈主
 					if (postInfo.isFollow) {
 						this.actionList = this.actionList.filter(item => item.key != 'cancelFollow' && item.key !=
@@ -619,17 +628,19 @@
 				display: inline-block;
 				font-size: 20rpx;
 				color: #ffffff;
-				background-color: $themes-color;
-				padding: 5rpx 10rpx;
+				//background-color: $themes-color;
+				background-color: #6322EF;
+				padding: 3rpx 10rpx;
 				border-radius: 10rpx;
 				margin-right: 10rpx;
+				font-weight: 600;
 			}
 
 			.officials {
 				display: inline-block;
 				font-size: 25rpx;
 				color: #ffffff;
-				background-color: #ff0000;
+				background-color: #6322EF;
 				padding: 5rpx 10rpx;
 				border-radius: 10rpx;
 				margin-left: auto;
@@ -653,12 +664,19 @@
 	}
 
 	.post-text {
-		display: block;
 		display: -webkit-box;
 		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 10;
-		white-space: pre-wrap;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
 		overflow: hidden;
+		height: auto;
+		// width: auto;
+		// display: block;
+		// display: -webkit-box;
+		// -webkit-box-orient: vertical;
+		// -webkit-line-clamp: 5;
+		// white-space: nowrap;
+		// overflow: hidden;
 	}
 
 	.discuss-title {

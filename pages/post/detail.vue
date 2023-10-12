@@ -23,8 +23,9 @@
 				</view> -->
 			</view>
 			
-			<view class="post-title">{{ postDetail.title }}</view>
-			<rich-text class="post-text" @longpress="onCopy" :nodes="postDetail.content"></rich-text>
+			<view class="post-title" style="font-weight: bold;">{{ postDetail.title }}</view>
+			<!-- <u-parse :html="postDetail.content" @longpress="onCopy"></u-parse> -->
+			<rich-text class="post-text" @longpress="onCopy" :nodes="postDetail.content |formatRich"></rich-text>
 			
 			<view v-if="showType=='1'&&postDetail.media&&postDetail.media.length>0&&postDetail.type == 1">
 				<u-swiper
@@ -147,7 +148,7 @@
 		</view> -->
 
 		<view class="comment-box">
-			<view class="title">全部评论</view>
+			<view class="title" >全部评论</view>
 			<view style="margin-bottom: 40rpx;" v-for="(item, index) in commentList" :key="index">
 				<view class="comment-item" @longpress="delComment(item, index)">
 					<image @click="jumpUser(item.userInfo.uid)" class="avatar" :src="item.userInfo.avatar"></image>
@@ -265,7 +266,7 @@
 		<!-- 分享海报弹窗-->
 		<u-popup v-model="showCanvas" mode="center" width="80%">
 			<view class="share-box">
-				<image :src="posterUrl" class="images"></image>
+				<image :src="posterUrl" class="images"></image> 
 			</view>
 			<view class="footer">
 				<u-button :custom-style="shareBtnStyle" @click="saveImg" type="success" shape="circle">保存分享</u-button>
@@ -339,6 +340,12 @@
 				statusBarHeight: 0,
 				navigationBarHeight:0
 			};
+		},
+		filters: {
+			// -webkit-line-clamp: 4;
+			formatRich(val){
+				return "<div style='overflow : hidden;text-overflow: ellipsis;display: -webkit-box; -webkit-box-orient: vertical;word-break: break-all;'>" + val + "</div>"
+				}
 		},
 		onLoad(options) {
 			this.postId = options.id;
@@ -676,7 +683,6 @@
 			onReply(e) {
 				this.placeholder = '回复：' + e.userInfo.username;
 				this.focus = true;
-
 				let pid = e.pid;
 				if (pid === 0) {
 					this.form.pid = e.id;
@@ -739,7 +745,6 @@
 						this.commentList = [];
 						this.form.pid = 0;
 						this.getCommentList();
-						
 						this.postDetail.commentCount++;
 					}
 					this.isSubmitD = false;
@@ -1206,7 +1211,7 @@
 		bottom: 0;
 		width: 100%;
 		background-color: #fff;
-		padding: 20rpx;
+		padding: 20rpx 20rpx 50rpx;
 		display: flex;
 		z-index: 999;
 	}
@@ -1440,7 +1445,14 @@
 	}
 
 	.post-text {
+		// width: 90%;
+		// white-space: pre-wrap;
+		display: block;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		// -webkit-line-clamp: 10;
 		white-space: pre-wrap;
+		// overflow: hidden;
 	}
 	
 	.other-img-flex {

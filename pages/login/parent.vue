@@ -6,12 +6,13 @@
 			请设置您的母星
 		</view>
 
-		<view class="searchbox uni-flex uni-row">
+		<view class="searchbox uni-flex uni-row" style="align-items: center;" @click="getnavigateTo">
 			<view class="searchimage">
 				<image src="https://mallwj.hm-myy.cn/169113249064520230804150130.png" mode=""></image>
 			</view>
-			<view class="searchinput" style="flex: 1 1 0%;">
-				<input type="text" v-model="keyword" placeholder="搜索您的母星" @blur="searchParent" />
+			<view class="searchinput" style="flex: 1 1 0%; " >
+				<view style="color: #fff;">搜索您的母星</view>
+				<!-- <input type="text" v-model="keyword" placeholder="搜索您的母星" @blur="searchParent" /> -->
 			</view>
 		</view>
 
@@ -40,9 +41,9 @@
 			</view>
 
 		</view>
-		<view class="noresult" v-if="search.length == 0">
+		<!-- <view class="noresult" v-if="search.length == 0">
 			暂无搜索结果
-		</view>
+		</view> -->
 	</view>
 
 </template>
@@ -93,6 +94,11 @@
 					});
 				}
 				
+			},
+			getnavigateTo(){
+				uni.navigateTo({
+					url:'/pages/login/setParent'
+				})
 			},
 			toSetParent(code){
 				let _this = this;

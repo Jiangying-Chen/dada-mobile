@@ -7,7 +7,7 @@
 	background-color: #fff;
 	padding: 20rpx;
 	border-radius: 10rpx;
-	box-shadow: 5rpx 5rpx 10rpx #999;
+	// box-shadow: 5rpx 5rpx 10rpx #999;
 	margin: 20rpx;
 	.cover{
 		width: 100%;
@@ -19,7 +19,7 @@
 		padding-top: 20rpx;
 		border-top: 1px solid #F5F5F5;
 		font-size: 28rpx;
-		color: #999;
+		color: #fff;
 		.btn{
 			margin-left: auto;
 			margin-right: 0;
@@ -27,7 +27,7 @@
 	}
 	.txt{
 		font-size: 28rpx;
-		color: #999;
+		color: #fff;
 	}
 }
 
@@ -37,17 +37,19 @@
 		display: flex;
 		flex-wrap: wrap;
 		.item {
+			color: #fff;
+			background: #7762EC;
 			margin-right: 20rpx;
 			margin-top: 20rpx;
 			border-radius: 20rpx;
 			font-size: 30rpx;
 			font-weight: 40rpx;
 			padding: 10rpx 12rpx;
-			box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.29);
+			// box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.29);
 		}
 	}
 	text{
-		color: #999;
+		color: #fff;
 		font-size: 28rpx;
 		margin-top: 20rpx;
 	}

@@ -125,7 +125,7 @@
 										uni.setStorageSync("token", res2.result.token);
 										this.getUserInfo();
 										uni.navigateTo({
-											url:'/pages/login/parent'
+											url:'/pages/login/interest'
 										})
 										// uni.navigateBack({});
 									})

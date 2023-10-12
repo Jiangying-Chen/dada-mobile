@@ -1,23 +1,23 @@
 <template>
-	<view style="background: #070042;" :style="{minHeight:allHeight+'px'}">
+	<view :style="{minHeight:allHeight+'px'}">
 		<view class="back-wrap">
 			<top-nave :bar-height="statusBarHeight" :nav-height="navigationBarHeight" title="个人主页" :isback="true"></top-nave>
 			<!-- 头部 -->
 			<view class="page-top" >
 				<view class="avatar">
 					<image :src="userInfo.avatar"
-						style="width: 120rpx;height: 120rpx;border-radius: 128rpx;border: 1rpx solid #ffffff;">
+						style="width: 144rpx;height: 144rpx;border-radius: 50%;">
 					</image>
 				</view>
 				<view>
 					<view style="font-size: 34rpx;font-weight: 600;line-height: 48rpx;margin-top: 30rpx;">
 						{{ userInfo.username }}
 					</view>
-					<view style="font-size: 12px;font-weight: 400;color: #FFFFFF;margin-top: 26rpx;">
+					<view style="font-size: 12px;font-weight: 400;margin-top: 26rpx;">
 						<!-- 浙江大学/浙江工业大学/浙江师范大学 -->
 						{{userInfo.strInfo}}
 					</view>
-					<view style="font-size: 24rpx;line-height: 33rpx;margin-top: 16rpx;color: rgba(255,255,255,0.7);">{{ userInfo.intro }}</view>
+					<view style="font-size: 24rpx;line-height: 33rpx;margin-top: 16rpx;">{{ userInfo.intro }}</view>
 				</view>
 				<!-- 圈子&关注&粉丝&编辑资料 按钮 -->
 				<view class="some-btn uni-flex uni-row" style="justify-content: center;">
@@ -38,20 +38,11 @@
 			
 			<!-- 底部 -->
 			<view class="page-bottom">
-				<view class="tabs" style="background: #070042;" :style="{top: navHeight*2 + 'rpx'}">
-					<!-- #ifdef APP-PLUS -->
-					
-					<u-tabs :list="tabList" font-size="28" name="tabName" bg-color="none" :current="current" @change="tabChange"
-						inactive-color="#FFFFFF" active-color="#FFFFFF" show-bar="true" bar-height="6" bar-width="136" height="40">
-					</u-tabs>
-					<!-- #endif -->
-					<!-- #ifndef APP-PLUS -->
+				<view class="tabs" style="background: #0F0158;" :style="{top: navHeight*2 + 'rpx'}">
 					<u-tabs :list="tabList" font-size="28" name="tabName" bg-color="none" :current="current"
-						@change="tabChange" inactive-color="#FFFFFF" active-color="#FFFFFF" bar-height="6" bar-width="20"
+						@change="tabChange" inactive-color="#ffffff" active-color="#ffffff" bar-height="6" bar-width="20"
 						 height="40" >
 					</u-tabs>
-					<!-- #endif -->
-
 				</view>
 				
 				<view v-if="current === 0">
@@ -59,6 +50,19 @@
 					<view v-if="postList.length ==0" style="background-color: #f7f7f7;height: 160rpx;"></view>
 					<!-- #endif -->
 					<post-list :list="postList" :loadStatus="loadStatus"></post-list>
+				</view>
+				<view v-if="current === 1">
+					<view v-if="ImagesList.length ==0" >
+						<u-empty margin-top="100" text="暂无内容" mode="favor"></u-empty>
+					</view>
+					<view v-if="ImagesList.length >0"  style="width: 96%;margin: 0 2%;flex-wrap: wrap; display: flex;justify-content: space-between;">
+						<view v-for="(item,index) in ImagesList" :key="index" class="" style="">
+							<view style="width: 45%;border-radius: 16rpx 16rpx 16rpx 16rpx;">
+								<image :src="item.url" mode="aspectFill" style="width: 338rpx;height: 338rpx;border-radius: 16rpx 16rpx 16rpx 16rpx;"></image>
+							</view>
+						</view>
+					</view>
+					<!-- <post-list :list="postList" :loadStatus="loadStatus"></post-list> -->
 				</view>
 				
 			</view>
@@ -126,6 +130,7 @@
 		},
 		data() {
 			return {
+				ImagesList:[],
 				loading: true,
 				background: {
 					backgroundColor: 'unset'
@@ -273,6 +278,10 @@
 					myUid: this.currUid
 				}).then(res => {
 					this.postList = this.postList.concat(res.result.data);
+					console.log(this.postList,res.result.data,'this.postList===')
+					let arrList=this.postList[0].userInfo.userImages?JSON.parse(this.postList[0].userInfo.userImages):[];
+					this.ImagesList=arrList;
+					console.log(this.ImagesList,'====')
 					if (res.result.current_page >= res.result.total || res.result.last_page === 0) {
 						this.loadStatus = "nomore";
 					} else {
@@ -505,7 +514,7 @@
 </script>
 <style lang="scss">
 	page {
-		background-color: $bg-color-base;
+		background-color: $bg-color-black;
 	}
 </style>
 <style lang="scss" scoped>
@@ -519,9 +528,9 @@
 		// width: 750rpx;
 		// height: 700rpx;
 		padding: 30rpx;
-		color: #ffffff;
+		color: $text-color-base;
 		margin: 159px 12px 0;
-		background: #06407A;
+		background: $bg-color-light;
 		border-radius: 8px 8px 8px 8px;
 		text-align: center;
 		.setting {
@@ -584,15 +593,15 @@
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				// margin-left: 150rpx;
 				width: 184rpx;
-				height: 64rpx;
-				background-color: #03D7FC;
-				// border: 2rpx solid rgba(255, 255, 255, 0.6);
-				color: #06407A;
+				height: 54rpx;
+				line-height: 54rpx;
+				background-color: $text-color-purple;
+				border: 2rpx solid $border-color;
 				border-radius: 100rpx;
 				font-size: 24rpx;
 				font-weight: 600;
+				color: $text-color-white;
 			}
 
 			.watch-btn {
@@ -602,8 +611,8 @@
 				// margin-left: 60rpx;
 				width: 124rpx;
 				height: 54rpx;
-				background-color: rgba(0, 0, 0, 0.6);
-				border: 2rpx solid rgba(255, 255, 255, 0.6);
+				background-color: $btn-base;
+				border: 2rpx solid $border-color;
 				border-radius: 100rpx;
 				font-size: 24rpx;
 				font-weight: 600;
@@ -616,14 +625,14 @@
 				// margin-left: 60rpx;
 				width: 124rpx;
 				height: 54rpx;
-				background-color: #f5f5f5;
-				color: #544949;
-				border: 2rpx solid rgba(255, 255, 255, 0.6);
+				//background-color: #f5f5f5;
+				color: $text-color-purple;
+				border: 2rpx solid $border-color;
 				border-radius: 100rpx;
 				font-size: 24rpx;
 				font-weight: 600;
 			}
-
+            //加好友
 			.chatButton {
 				display: flex;
 				align-items: center;
@@ -631,11 +640,13 @@
 				margin-left: 10rpx;
 				width: 124rpx;
 				height: 54rpx;
-				background-color: #5f6166;
-				border: 2rpx solid rgba(172, 172, 172, 0.6);
+				line-height: 54rpx;
+				background-color: $text-color-purple;
+				border: 2rpx solid $border-color;
 				border-radius: 100rpx;
 				font-size: 24rpx;
 				font-weight: 600;
+				color: $text-color-white;
 			}
 		}
 	}
@@ -678,9 +689,9 @@
 		// transform: translateY(-108rpx);
 		.tabs {
 			background-color: #ffffff;
-			position: sticky;
+			// position: sticky;
 			top: 82rpx;
-			z-index: 99;
+			// z-index: 99;
 			display: flex;
 			justify-content: center;
 			padding-top: 60rpx;
@@ -693,10 +704,9 @@
 	}
 
 	.avatar {
-		width: 130rpx;
-		height: 130rpx;
+		width: 144rpx;
+		height: 144rpx;
 		border-radius: 50%;
-		border: 2px solid #FFFFFF;
 		z-index: 999;
 	}
 
@@ -704,36 +714,6 @@
 		margin-top: 30rpx;
 		margin-bottom: 30rpx;
 	}
-
-	.info-c {
-		display: flex;
-		flex-direction: column;
-	}
-
-	.info-c>text {
-		margin-bottom: 20rpx;
-		color: #999;
-	}
-
-	.info-c .level-box {
-		margin-bottom: 20rpx;
-		display: flex;
-		align-items: center;
-		color: #999;
-
-		.level {
-			font-size: 20rpx;
-			color: #fff;
-			padding: 5rpx 10rpx;
-			background-color: $themes-color;
-			border-radius: 10rpx;
-			margin-right: 10rpx;
-		}
-	}
-
-	/* 标签 */
-	.tag-box {}
-
 	.tag-box .tag {
 		padding: 10rpx 20rpx;
 		border-radius: 20rpx;

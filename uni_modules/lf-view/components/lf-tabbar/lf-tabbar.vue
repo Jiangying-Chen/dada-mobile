@@ -5,12 +5,12 @@
 				<view @click="onTab(item, index)" v-show="active !== index" class="tab-item">
 					<image class="icon" :class="{ 'mid-button': item.midButton }" :src="item.iconPath"  :style="{height:item.midButton == true ? '34px' : '24px'}"></image>
 					<text class="txt" :style="{ color: color }">{{ item.text }}</text>
-					<text v-if="count[index] > 0" class="number">{{count[index] | maxNum}}</text>
+					<!-- <text v-if="count[index] > 0" class="number">{{count[index] | maxNum}}</text> -->
 				</view>
 				<view @click="onTab(item, index)" v-show="active === index" class="tab-item">
 					<image class="icon" :class="{ 'mid-button': item.midButton }" :src="item.selectedIconPath"></image>
 					<text class="txt" :style="{ color: selectedColor }">{{ item.text }}</text>
-					<text v-if="count[index] > 0" class="number">{{count[index] | maxNum}}</text>
+					<!-- <text v-if="count[index] > 0" class="number">{{count[index] | maxNum}}</text> -->
 				</view>
 			</block>
 		</view>
@@ -32,14 +32,20 @@
 				<u-icon @click="onClose" size="50rpx" name="close"></u-icon>
 			</view> -->
 		</lf-popup>
+		
+		<RealName v-model="isOpenRealName"></RealName>
+		
 		<view style="height: 52px;"></view>
 	</view>
 </template>
 
 <script>
-
+import RealName from '@/components/RealName/RealName.vue'
 import tabbar from '@/utils/tabbar.js';
 export default {
+	components:{
+		RealName
+	},
 	name: 'lf-tabbar',
 	props: {
 		//tab 上的文字默认颜色
@@ -50,7 +56,7 @@ export default {
 		//tab 上的文字选中时的颜色
 		selectedColor: {
 			type: String,
-			default: '#03D7FC'
+			default: '#C1C0FA'
 		},
 		active:{
 			type:Number,
@@ -94,12 +100,39 @@ export default {
 				icon: '/static/article.png',
 				text: '长文',
 				url: '/subpages/content/article/add'
-			}]
+			}],
+			
+			isOpenRealName:false,
+			
 		};
 	},
+	computed:{
+		userInfo(){
+			return this.$store.state.loginUserInfo
+		}
+	},
 	methods: {
-
 		onTab(e, index) {
+			if(e.midButton){
+			   if(this.userInfo.uid){
+				   //未实名
+				   if(!this.userInfo.identity){
+					   this.isOpenRealName = true;
+					   return
+				   }
+				   
+			   }else{
+				   this.$u.toast('未登录，暂不支持发帖');
+				   // setTimeout(()=>{
+					  //  uni.navigateTo({
+					  //  	  url:'/pages/user/login'
+					  //  })
+				   // },500)
+				   return
+			   }
+			   
+			}
+			
 			if (!e.isCustom) {
 				uni.switchTab({
 					url: e.pagePath
@@ -109,13 +142,10 @@ export default {
 					url: e.pagePath
 				});
 			}
-			
-			// if(e.midButton){
-			// 	this.showPopup = true;
-			// }
-			
 			this.$emit('click', e);
 		},
+		
+		
 		onClose(){
 			this.showPopup = false;
 		},
@@ -131,6 +161,76 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+	.flex-items {
+		display: flex;
+		align-items: center;
+	}
+.informationShow-centent {
+		width: 580rpx;
+		height: 500rpx;
+		.title{
+			font-weight: bold;
+			color: $text-color-black;
+			text-align: center;
+			margin: 42rpx auto;
+			font-size: 40rpx;
+		}
+		.red-label{
+			font-size: 28rpx;
+			font-weight: 400;
+			color: #E3493F;
+			text-align: center;
+			margin-bottom: 20rpx;
+		}
+		.box{
+			margin-bottom: 40rpx;
+			.label-left{
+				width: 140rpx;
+				font-size: $font-size-base;
+				font-weight: 400;
+				color: #000000;
+				text-align: center;
+				
+			}
+			.label-right{
+				flex:1;
+				.remark {
+					border: 2rpx solid #D9D9D9;
+					width: 360rpx;
+					height: 66rpx;
+					line-height: 66rpx;
+					border-radius: 16rpx;
+					padding: 0 20rpx;
+				}
+			}
+		}
+		
+
+	.flex-footer{
+		display: flex;
+		padding: 26rpx 32rpx;
+		justify-content: space-between;
+		align-items: center;
+		.btns{
+			width: 220rpx;
+			height: 64rpx;
+			text-align: center;
+			//line-height: 64rpx;
+			border-radius: 32rpx ;
+			border: 1upx solid $btn-base;
+		}
+		.exitBut {
+			background:$text-color-white;
+			color: $btn-base;
+		}
+		.submitbut {
+			background:$btn-base;
+			color: $text-color-white;
+		}
+	}	
+	
+}	
+	
 .tabbar-wrap {
 	position: fixed;
 	bottom: 0;
@@ -138,9 +238,14 @@ export default {
 	z-index: 99999;
 	//background-color: #001937;
 	background-color: #2A0A6D;
-	height: 52px;
+	//height: 52px;
+	
+	//height: 56px;
+	padding-top: 4px;
 	display: flex;
 	align-items: center;
+	padding-bottom: constant(safe-area-inset-bottom);
+	padding-bottom: env(safe-area-inset-bottom);
 	.tab-item {
 		display: flex;
 		flex-direction: column;

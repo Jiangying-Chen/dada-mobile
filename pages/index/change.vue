@@ -4,20 +4,30 @@
 		<view class="barbox">
 			<view class="uni-flex uni-row toptitle"  style="justify-content: space-between;">
 				<view class="">
-					入驻星球：{{allNumber}}
+					入驻星球：{{joinTopicList.length}}
 				</view>
 				<!-- <view class="">
 					全部星球 >
 				</view> -->
 			</view>
-			<view class="xqbox uni-flex uni-row">
-				<view class="xqview" v-for="(item,index) in topList" v-if="index < 4">
+			<!-- uni-row -->
+			<scroll-view :scroll-x="true" class="xqbox" style="width: 100%; display: flex;overflow-x: hidden;white-space: nowrap;">
+				<view style="display: inline-block;"  class="xqview" v-for="(item,index) in joinTopicList" v-if="index < joinTopicList.length">
+					<image :src="item.bgImage" mode=""></image>
+					<view class="xqname">{{item.topicName}}</view>
+				</view>
+				<view v-else style="color: #fff;">暂未入驻</view>
+			</scroll-view>
+			<!-- <view  class="xqbox uni-flex ">
+				<scroll-view :scroll-x="true" style="width: 90%;overflow-x: hidden;white-space: nowrap;">
+				<view class="xqview" v-for="(item,index) in topList" v-if="index < topList.length">
 					<image :src="item.bgImage" mode=""></image>
 					<view class="xqname">
 						{{item.topicName}}
 					</view>
 				</view>
-			</view>
+				</scroll-view>
+			</view> -->
 		</view>
 		<view class="" style="height: 22px;"></view>
 		<view class="xqlist" v-for="item in allList">
@@ -68,10 +78,17 @@
 				allNumber:0,
 				uid:0,
 				topicName:'',
-				bgImage:''
+				bgImage:'',
+				
+				joinTopicList:[],
+				flag:1,
 			};
 		},
-
+       computed: {
+			changeComplete(){
+				return this.$store.state.changeComplete
+			}
+		},
 		onLoad(options) {
 			this.navigationBarHeight = getApp().globalData.statusBarHeight;
 			this.statusBarHeight = getApp().globalData.statusBarHeight + getApp().globalData.navigationBarHeight;
@@ -81,6 +98,7 @@
 				this.toppicDetail(res.result.topicId)
 				
 			});
+			this.getUserJoinTopic();
 		},
 		mounted: function() {
 			
@@ -90,9 +108,44 @@
 			this.geTop()
 		},
 		methods: {
+			// getUserJoinTopic() {
+			// 	let _this=this;
+			// 	_this.$H.post('topic/userJoinTopic',{
+			// 			page:_this.pages,
+			// 		})
+			// 		.then(res => {
+			// 			_this.joinTopicList = _this.joinTopicList.concat(res.result.data);
+			// 			_this.isLoadMore = (_this.pages == res.result.total);
+			// 			if (!_this.isLoadMore) {
+			// 				_this.pages++;
+			// 			}
+			// 			uni.stopPullDownRefresh();
+			// 		});
+			// },
+			// 获取当前加入的星球
+			getUserJoinTopic() {
+				this.$H.post('topic/userJoinTopic',{
+						page:1,
+					})
+					.then(res => {
+						this.joinTopicList = res.result.data;
+						console.log('this.joinTopicList',this.joinTopicList)
+					});
+			},
 			changeTop(row){
+				//if(this.globalData.onLineObj && this.globalData.onLineObj.taskStatus!='COMPLETED'){
+				if(this.changeComplete==false){
+					this.$store.commit('SET_TOPIC',row.id)
+					this.$H.post(`point/task/complete/-1?alreadyNum=1&type=change_topic`).then(res => {
+						this.$store.commit('SET_CHANGECOMPLETE',true)
+					})
+				}
 				uni.setStorageSync('topicId', row.id);
-				uni.navigateBack({})
+				uni.switchTab({
+						url: '/pages/index/index'
+					})
+				// uni.navigateBack({})
+				
 			},
 			toppicDetail(id) {
 				this.$H.get('topic/detail', {
@@ -132,7 +185,7 @@
 					// console.log(array);
 					_this.allList = array
 					
-					
+					console.log(this.allList,'====')
 					if(res.result.total == _this.pages){
 						_this.loadend = true;
 					}else{
@@ -161,9 +214,10 @@
 			color: $text-color-light;
 		}
 		.xqbox{
+			
 			margin-top: 14px;
 			.xqview{
-				width: 18%;
+			
 				margin: 0 1%;
 				text-align: center;
 				image{
@@ -182,7 +236,7 @@
 	
 	.xqlist{
 		position: relative;
-		margin: 0 12px;
+		margin:80rpx  12px 180rpx;
 		padding-bottom: 25px;
 		height:440px;
 		.xq{
@@ -191,6 +245,10 @@
 				height: 120px;
 			}
 			.xqtitle{
+				// position: absolute;
+				// left: 37rpx;
+				// width: auto;
+				// z-index: 9;
 				background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 30%, rgba(0,0,0,0.8) 70%, rgba(0,0,0,0) 100%);
 				text-align: center;
 				color: white;

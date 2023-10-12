@@ -36,7 +36,12 @@ const store = new Vuex.Store({
 		},
 		chattingUserInfo: null,
 		chattingGroupInfo: null,
-		noticeList: []
+		noticeList: [],
+		
+		topicId:'',
+		changeComplete:false,
+		askComplete:false,
+		formId:'-1',
 	},
 	mutations: {
 		login(state, userInfo) {
@@ -48,10 +53,25 @@ const store = new Vuex.Store({
 			state.sessionKey = null;
 		},
 		_setFriendList(state, list) {
-			state.friendList = list
+			state.friendList = list;
+		},
+		SET_TOPIC(state,topic){
+			state.topic = topic;
+		},
+		SET_CHANGECOMPLETE(state,changeComplete){
+			state.changeComplete = changeComplete;
+		},
+		SET_ASKCOMPLETE(state,askComplete){
+			state.askComplete = askComplete;
+		},
+		SET_FORMID(state,formId){
+			state.formId = formId;
 		}
 	},
 	getters: {
+		topic: state => {
+			return state.topic
+		},
 		messegeNum: state => {
 			return state.messegeNum
 		},
@@ -153,8 +173,9 @@ const store = new Vuex.Store({
 		getNoticeList() {
 			request.get('notice/list').then(res => {
 				if (res.code == 0) {
-					$store.state.totalUnread.notice = res.data.count
-					$store.state.noticeList = res.data.noticeList
+					$store.state.totalUnread.notice = res.data.count;
+					//$store.state.noticeList = res.data.noticeList;
+					$store.state.noticeList = res.data.noticeList.filter(v=>v.isRead==0);
 				}
 			})
 		},

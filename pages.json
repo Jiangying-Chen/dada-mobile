@@ -3,10 +3,11 @@
 		"^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
 	},
 	"tabBar": {
+		"custom": true, 
 		"color": "#fff",
 		"selectedColor": "#C1C0FA",
 		"borderStyle": "white",
-		"backgroundColor": "#7F7DEB",
+		"backgroundColor": "#2A0A6D",
 		"list": [{
 				"pagePath": "pages/index/index",
 				"iconPath": "static/tabbar/home-1.png",
@@ -64,6 +65,25 @@
 			"path": "pages/store/detail",
 			"style": {
 				"navigationBarTitleText": "商品详情",
+				"navigationStyle":"custom"
+			}
+		},{
+			"path": "pages/store/fuel",
+			"style": {
+				"navigationBarTitleText": "燃料明细"
+				// "navigationStyle":"custom"
+			}
+		},{
+			"path": "pages/store/rateDetails",
+			"style": {
+				"navigationBarTitleText": "详情",
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/store/rate",
+			"style": {
+				"navigationBarTitleText": "我的兑换",
 				"navigationStyle":"custom"
 			}
 		},
@@ -137,16 +157,28 @@
 			}
 		},
 		{
-			"path": "pages/login/login",
-			"style": {
-				"navigationBarTitleText": "首次登录",
-				"navigationStyle":"custom"
-			}
-		},
-		{
 			"path": "pages/login/parent",
 			"style": {
 				"navigationBarTitleText": "设置母星",
+				"navigationStyle":"custom"
+			}
+		},{
+			"path": "pages/login/setParent",
+			"style": {
+				"navigationBarTitleText": "设置母星",
+				"navigationStyle":"custom",
+				"enablePullDownRefresh": true
+			}
+		},{
+			"path": "pages/login/interest",
+			"style": {
+				"navigationBarTitleText": "兴趣爱好",
+				"navigationStyle":"custom"
+			}
+		},{
+			"path": "pages/login/information",
+			"style": {
+				"navigationBarTitleText": "填写信息",
 				"navigationStyle":"custom"
 			}
 		},
@@ -327,15 +359,6 @@
             
         }
         ,{
-            "path" : "pages/user/sms-login",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
             "path" : "pages/topic/info-edit",
             "style" :                                                                                    
             {
@@ -375,7 +398,9 @@
             "path" : "pages/discuss/choose-discuss/choose-discuss",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                
+				"navigationBarTitleText": "选择话题",
+				"navigationStyle": "custom",
                 "enablePullDownRefresh": false
             }
             
@@ -385,6 +410,7 @@
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",
+				"navigationStyle": "custom",
                 "enablePullDownRefresh": false
             }
             
@@ -430,7 +456,7 @@
 		    "path" : "pages/sign/integral",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "我的积分",
+		        "navigationBarTitleText": "燃料明细",
 		        "enablePullDownRefresh": false
 		    }
 		    
@@ -462,33 +488,7 @@
             }
             
         }
-        ,{
-            "path" : "pages/user/go-login",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/user/email-login",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/user/register",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
+        
         ,{
             "path" : "pages/user/protocol",
             "style" :                                                                                    
@@ -558,7 +558,7 @@
 		{
 			"path": "pages/im/chat-list/chat-list",
 			"style": {
-				"navigationBarTitleText": "林风IM",
+				"navigationBarTitleText": "黑洞助手",
 				"navigationStyle": "custom",
 				"enablePullDownRefresh": true
 			}
@@ -580,15 +580,48 @@
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
         }
-        
         ,{
             "path" : "pages/account/cash-out",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
+            }
+        }
+        ,{
+            "path" : "pages/minerals/friendList",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "全部好友",
+				"navigationStyle": "custom"
+            }
+            
+        }
+        ,{
+            "path" : "pages/store/exchange",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "立即兑换"
+            }
+            
+        }
+        ,{
+            "path" : "pages/store/changStatus",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "立即兑换",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/message/chooseFriend",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "选择好友",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": false
             }
             
         }

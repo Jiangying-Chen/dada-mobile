@@ -1,7 +1,7 @@
 <template>
   <view class="integral-details" ref="container">
     <view class="header">
-      <view class="currentScore">我的积分</view>
+      <view class="currentScore">我的燃料</view>
       <view>{{ info.integral }}</view>
       <view class="line"></view>
     </view>
@@ -44,7 +44,7 @@ export default {
   data: function() {
     return {
       navList: [
-        { name: "积分明细" }
+        { name: "燃料明细" }
       ],
       current: 0,
       where: {
@@ -96,9 +96,10 @@ export default {
 </script>
 <style lang="less">
 .integral-details .header {
-  background-image: url('http://pic.linfeng.tech/test/20220507/eab61163a66843a6a0718cb6dad3e1e5.png');
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
+  // background-image: url('http://pic.linfeng.tech/test/20220507/eab61163a66843a6a0718cb6dad3e1e5.png');
+  // background-repeat: no-repeat;
+  // background-size: 100% 100%;
+  background: #7F7DEB;
   width: 100%;
   height: 3.6 * 100rpx;
   font-size: 0.72 * 100rpx;
@@ -161,7 +162,7 @@ export default {
 
 .integral-details .wrapper .nav .item.on {
   background-color: #fff;
-  color: #00aaff;
+  color: #6322EF;
   font-weight: bold;
   border-radius: 0.2 * 100rpx 0.2 * 100rpx 0 0;
 }
@@ -209,7 +210,7 @@ export default {
 .integral-details .wrapper .list .item .num {
   font-size: 0.36 * 100rpx;
   font-family: 'GuildfordProBook 5';
-  color: #ff0000;
+  color: #282828;
 }
 
 .integral-details .wrapper .list2 {

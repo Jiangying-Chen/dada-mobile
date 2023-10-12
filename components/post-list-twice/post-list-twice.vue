@@ -6,7 +6,7 @@
 					<view class="post-item">
 						<image v-if="item.type == 1 || item.type == 3" :src="item.media[0]" mode="aspectFill"
 							class="basic-img"></image>
-						<image v-if="item.type == 4" src="/static/images/vote-cover.jpeg" mode="aspectFill"
+						<image v-if="item.type == 4" src="https://xiaoyuan.pujinetwork.com/bbs/20230825/6bf11e9dfbeb4cf59246e950bf692272.jpeg" mode="aspectFill"
 							class="basic-img"></image>
 						<view v-if="item.type == 2">
 							<view class="video-wrap">
@@ -64,7 +64,7 @@
 				<u-empty margin-top="100" text="暂无内容" mode="favor"></u-empty>
 			</block>
 			<block v-else>
-				<u-loadmore margin-bottom="50" margin-top="50" bg-color="#f5f5f5" :status="loadStatus" />
+				<u-loadmore margin-bottom="50" margin-top="50" bg-color="#f5f5f5" :status="loadStatus" color='#ffffff'/>
 			</block>
 		</view>
 	</view>

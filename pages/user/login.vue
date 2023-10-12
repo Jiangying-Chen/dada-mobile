@@ -1,19 +1,26 @@
 <template>
-	<view style="position: relative;">
+	<view style="position: relative;height: 100vh;">
 		<top-nave :bar-height="statusBarHeight" :nav-height="navigationBarHeight" title="授权登录" :isback="true"></top-nave>
 		<view class="login">
 			<image class="logo" src="https://mallwj.hm-myy.cn/169104903858020230803155038.png" mode="widthFix"></image>
 			<!-- <text class="txt1">申请获取手机号登录</text>
 			<text class="txt2">根据《网络安全法》等规定发帖评论等需要先绑定手机号哦</text> -->
 			
-			<button open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" class="loginBtn"
-			>
+			<button class="loginBtn" v-if="!agreement" @click="showMess">授权登录</button>
+			<button v-else open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" class="loginBtn">
 			授权登录</button>
 			<!-- <text class="txt3" @click="goBack">暂不登录</text> -->
 		</view>
+		<view class="agreement">
+			<image v-if="!agreement" src="../../static/images/none.png" mode="" @click="agreement=true"></image>
+			<image v-else src="../../static/images/solid.png" mode="" @click="agreement=false"></image>
+			<view>
+				<text class="font-color-999">我已阅读并同意</text>
+				<text style="color: #6322EF;" @click="protocol('protocol')">《用户服务协议与隐私政策》</text>
+			</view>
+			
+		</view>
 		
-		
-	
 	</view>
 	
 </template>
@@ -31,7 +38,9 @@
 				navigationBarHeight: 0,
 				statusBarHeight: 0,
 				domain: this.$H.domain,
-				shareCover: ""
+				shareCover: "",
+				agreement:false,
+				
 			};
 		},
 		onLoad() {
@@ -52,14 +61,11 @@
 				})
 			},
 			async login() {
-
 				// uni.showLoading({
 				// 	mask: true,
 				// 	title: '登录中'
 				// });
-
 				let that = this;
-
 				let loginCode = await this.getLoginCode();
 				that.$H.post('user/miniWxLogin', {
 					code: loginCode,
@@ -102,45 +108,51 @@
 					});
 				});
 			},
-			
+			showMess(){
+				uni.showToast({
+					title: '请先阅读并同意《用户服务协议与隐私政策》',
+					duration: 2000,
+					icon: 'none'
+				});
+				
+			},
 			getPhoneNumber(e) {
-				console.log(e)
-				if (e.detail.errMsg === "getPhoneNumber:ok") {
-					console.log(e)
-					uni.login({
-						provider: 'weixin',
-						success: (res) => {
-							this.$H.post('user/getSessionKey', {
-								code: res.code
-							}).then(res1 => {
-								if (res1.code == 0) {
-									this.$H.post('user/bindWxPhone', {
-										wechatOpenId: res1.openid,
-										sessionKey: res1.session_key,
-										encryptedData: e.detail.encryptedData,
-										iv: e.detail.iv,
-									}).then(res2 => {
-										uni.setStorageSync("hasLogin", true);
-										uni.setStorageSync("token", res2.result.token);
-										uni.navigateBack({});
-									})
-								}
-							})
-			
-						},
-						fail: () => {
-							uni.showToast({
-								title: "微信登录授权失败",
-								icon: "none"
-							});
-						}
-					})
-				} else {
-					uni.showToast({
-						title: "获取手机授权失败",
-						icon: "none"
-					});
-				}
+					if (e.detail.errMsg === "getPhoneNumber:ok") {
+						console.log(e)
+						uni.login({
+							provider: 'weixin',
+							success: (res) => {
+								this.$H.post('user/getSessionKey', {
+									code: res.code
+								}).then(res1 => {
+									if (res1.code == 0) {
+										this.$H.post('user/bindWxPhone', {
+											wechatOpenId: res1.openid,
+											sessionKey: res1.session_key,
+											encryptedData: e.detail.encryptedData,
+											iv: e.detail.iv,
+										}).then(res2 => {
+											uni.setStorageSync("hasLogin", true);
+											uni.setStorageSync("token", res2.result.token);
+											uni.navigateBack({});
+										})
+									}
+								})
+								
+							},
+							fail: () => {
+								uni.showToast({
+									title: "微信登录授权失败",
+									icon: "none"
+								});
+							}
+						})
+					} else {
+						uni.showToast({
+							title: "获取手机授权失败",
+							icon: "none"
+						});
+					}
 			
 			},
 			// getUserProfile() {
@@ -153,17 +165,46 @@
 			// 			}
 			// 		});
 			// 	});
-			// }
+			// },
+			//跳转到隐私服务协议
+			protocol(type) {
+				uni.navigateTo({
+					url: './protocol?type=' + type
+				})
+			},
 
 		}
 	}
 </script>
-
-<style lang="scss">
+<style>
+	page{
+		background-color: #0F0158;
+	}
+</style>
+<style lang="scss" scoped>
+	.agreement {
+		position: absolute;
+		bottom: 120rpx;
+		left: 70rpx;
+		right: 0;
+		display: flex;
+		align-items: center;
+		line-height: 50rpx;
+	    font-size: 24rpx;
+        font-weight: 500;
+		color:#fff;
+		
+		image {
+			width: 36rpx;
+			height: 36rpx;
+			margin-right: 15upx;
+		}
+	}
 	.login {
 		display: flex;
 		flex-direction: column;
 		padding: 100rpx;
+		
 	}
 
 	.login .logo {

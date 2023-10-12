@@ -1,15 +1,53 @@
 <template>
-	<view style="position: relative;" class="mainbg">
-		<top-nave :bar-height="statusBarHeight" :nav-height="navigationBarHeight" title="流星讯息"
-			:isback="true"></top-nave>
+	<view style="position: relative;" >
+		<!-- class="mainbg" -->
+		<!-- <top-nave :bar-height="statusBarHeight" :nav-height="navigationBarHeight" title="流星讯息"
+			:isback="true"></top-nave> -->
+			<top-nave :bar-height="statusBarHeight" :nav-height="navigationBarHeight" title="流星讯息"  title-color='#333'
+						:isback="true"></top-nave>
 		<view class="to-add" @tap="pageToFriend()">
 			+ 添加好友
 		</view>
+		<!-- @我的 -->
+		<view>
+			<view class="top_tite">
+				@我的
+			</view>
+			<view class="applylist" v-if="noticeList.length>0">
+				<view class="personview uni-flex uni-row" style="justify-content: space-between;"  v-for="item in callList" @click="navToDetail(item)">
+					<view class="uni-flex uni-row personinfo">
+						<view class="left-image">
+							<image :src="getUserAvatar(item)" mode=""></image>
+						</view>
+						<view class="left-info" style="flex: 1 1 0%;">
+							<view class="info-name">
+								{{getUserName(item)}}
+							</view>
+							<view class="info-time">
+								快来看看我发的帖子吧
+							</view>
+						</view>
+					</view>
+					<view class="right-btn uni-flex uni-row">
+						<view class="btn-add">
+						     查看
+						</view>
+						
+					</view>
+				</view>
+			</view>
+			<view class="msg-empty" v-else>
+				<text class="txt">暂无消息</text>
+			</view>
+			
+		</view>
+		
+		<!-- 好友申请 -->
 		<view class="top_tite">
 			好友申请
 		</view>
-		<view class="applylist" v-if="noticeList.length>0">
-			<view class="personview uni-flex uni-row" style="justify-content: space-between;"  v-for="item in noticeList">
+		<view class="applylist" v-if="addList.length>0">
+			<view class="personview uni-flex uni-row" style="justify-content: space-between;"  v-for="item in addList">
 				<view class="uni-flex uni-row personinfo">
 					<view class="left-image">
 						<image :src="getUserAvatar(item)" mode=""></image>
@@ -36,6 +74,8 @@
 		<view class="msg-empty" v-else>
 			<text class="txt">暂无好友申请</text>
 		</view>
+		
+		<!-- 可能认识的人 -->
 		<view class="top_tite">
 			可能认识的人
 		</view>
@@ -94,7 +134,13 @@
 	
 	export default {
 		computed: {
-			...mapGetters(['loginUserInfo', 'noticeList'])
+			...mapGetters(['loginUserInfo', 'noticeList']),
+			callList(){
+				return this.noticeList.filter(v=>v.type=='at-friend');
+			},
+			addList(){
+				return this.noticeList.filter(v=>v.type=='person-apply');
+			}
 		},
 		components: {
 			topNave
@@ -122,7 +168,8 @@
 				notation: '',
 				message: '',
 				openPop: false,
-				userInfo:{}
+				userInfo:{},
+				
 			};
 		},
 		onLoad() {
@@ -132,18 +179,28 @@
 			if (!$store.state.isSocketOpen) {
 				websocket.initConnect()
 			}
-			//从新获取消息列表
-			$store.dispatch('getNoticeList')
+			
 			this.getApplyList()
-			// console.log(this.noticeList)
-			// this.deleteNotice(98)
 		},
 		onShow() {
 			if (!$store.state.isSocketOpen&&uni.getStorageSync('hasLogin')) {
 				websocket.initConnect()
 			}
+			//从新获取消息列表
+			$store.dispatch('getNoticeList')
+			
 		},
 		methods: {
+			//查看帖子详情
+			navToDetail(item){
+				let postId = JSON.parse(item.information).postId;
+				this.$H.post(`notice/readById/${item.id}`).then(res => {
+					uni.navigateTo({
+						url: '/pages/post/detail?id=' + postId
+					});
+							
+				})
+			},
 			pageToFriend(){
 				uni.navigateTo({
 					url: '/pages/message/searchmessage'
@@ -372,7 +429,11 @@
 		}
 	}
 </script>
-
+<style>
+	page{
+		background-color: white;
+	}
+</style>
 <style lang="scss" scoped>
 	.to-add{
 		margin: 12px 17px;
