@@ -9,7 +9,7 @@
 					<text class="status3" v-else>已拒绝</text>
 				</view>
 				<navigator class="report-detail" :url="'/pages/report/detail?id=' + item.id" hover-class="none">
-					<image mode="aspectFill" :src="item.media[0]"></image>
+					<image mode="aspectFill" :src="item.media[0]" lazy-load></image>
 					<view class="info-c">
 						<view class="report-content u-line-2">{{ item.content.substring(0, 25) }}...</view>
 						<view class="specs-list">

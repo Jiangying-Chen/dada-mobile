@@ -24,7 +24,7 @@
 		<!-- 图片截图 -->
 		<view class="contentNav">截图证据</view>
 		<block>
-			<u-upload ref="uUpload" :size-type="['original']" name="Image" :max-count="9" :header="header"
+			<u-upload ref="uUpload" :size-type="['compressed']" name="Image" :max-count="9" :header="header"
 				:action="uploadImgUrl" @on-uploaded="submit" :auto-upload="false"></u-upload>
 		</block>
 
@@ -111,6 +111,7 @@
 					}
 				}else{
 					// #ifdef MP-WEIXIN
+					 this.$store.commit('SET_ISJUMP',false)
 						uni.navigateTo({
 							url: "/pages/user/login"
 						})

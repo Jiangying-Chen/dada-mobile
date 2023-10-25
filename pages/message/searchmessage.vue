@@ -61,7 +61,7 @@
 			</view>
 		</view>
 		
-		<u-popup v-model="openPop" mode="center" border-radius="14">
+		<u-popup v-model="openPop" mode="center" border-radius="14" :mask-close-able ='false'>
 			<view class="informationShow-centent">
 					<view class="title">申请添加好友</view>
 					<view class="flex-items box">

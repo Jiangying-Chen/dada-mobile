@@ -14,8 +14,10 @@
 					<image  src="https://mallwj.hm-myy.cn/168991908582720230721135805.png" mode="widthFix"></image>
 				</view>
 			</view>
+			
+			
 		</view>
-		<view class="hexiao" @click="hexiao" v-if="verStatus==true">
+		<view class="hexiao-css" @click="hexiao" v-if="verStatus==true">
 			<image src="https://xiaoyuan.pujinetwork.com/bbs/20230905/5e96902211014ec5891c62c6ea6a80ff.png" mode="widthFix" style="width: 120rpx; height: 120rpx;"></image>
 		</view>
 		
@@ -89,12 +91,13 @@
 	};
 </script>
 
-<style scoped lang="less">
-	.hexiao{
-		position: absolute;
+<style scoped lang="scss">
+	.hexiao-css{
+		position: fixed;
 		left: 300rpx;
 		bottom: 100rpx;
 		padding: 25rpx;
+		z-index: 9999;
 	}
 	.mainbg{
 		position: absolute;

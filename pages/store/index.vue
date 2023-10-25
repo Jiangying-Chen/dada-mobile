@@ -2,16 +2,19 @@
 	<view class="bgbox" >
 		<top-nave :bar-height="statusBarHeight" :nav-height="navigationBarHeight" title="星尘商店"></top-nave>
 		<!-- <top-nave :bar-height="statusBarHeight" :nav-height="navigationBarHeight" title="基地"></top-nave> -->
+		<view class="rafflebox" @tap="Goraffe">
+			<image src="https://xiaoyuan.pujinetwork.com/bbs/20230925/a0df961b46da44c0846430b551c6e3d2.png" alt="" class="rafImg" mode="widthFix">
+		</view>
 		<view class="intelbox">
 			<view class="pointbox">
 				<view class="point">
-					{{info.integral}}
+					{{info.integral || 0}}
 				</view>
 				<view class="point-title">
 					当前可用燃料
 				</view>
 			</view>
-			<view style="position: absolute;right: 0;top: 70rpx;">
+			<view style="position: absolute;left: 0;top: 70rpx;" id="Bannerbox">
 				<view class="fuelbtn" @tap="goUserIntegral(0)">燃料明细</view>
 				<view class="rateBtn" @tap="getRateBtn">我的兑换</view>
 			</view>
@@ -178,7 +181,7 @@
 		<view style="height: 50px;">&nbsp;</view>
 		<lf-tabbar :active="3"></lf-tabbar>
 		
-		<u-popup v-model="openPop" mode="center" border-radius="14" :bgColor="bgColor">
+		<u-popup v-model="openPop" mode="center" border-radius="14" :bgColor="bgColor" :mask-close-able ='false'>
 			<view class="popup">
 				<view class="content">
 					<button open-type="share" class="btn">立即邀请好友</button>
@@ -259,10 +262,18 @@
 		},
 		
 		methods: {
+			Goraffe(){
+				console.log(111)
+				uni.navigateTo({
+					url:'/subpages/content/luckdraw/luck-draw'
+				})
+			},
 			getnavigateTo(item){
 				//邀新任务
 				if(item.type=='invite_new_group' || item.type=='invite_new'){
-					this.openPop = true;
+					 if(getApp().globalData.isRealName==true){
+						 this.openPop = true;
+					 }
 					
 				}else if(item.skipUrl== '/pages/square/index'||item.skipUrl== '/pages/index/index'||item.skipUrl== '/pages/store/index'){
 					 uni.switchTab({
@@ -436,6 +447,19 @@
 	}
 </style>
 <style lang="scss" scoped>
+	.rafflebox {
+		z-index: 10;
+		position: absolute;
+		right: 0;
+		top: 300rpx;
+		.rafImg {
+			max-width: 250rpx;
+		}
+	}
+	#Bannerbox {
+		background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.6) 51%, rgba(0,0,0,0) 100%);
+		display: flex;
+	}
 	.popup{
 		background-image: url('https://xiaoyuan.pujinetwork.com/bbs/20230906/603e65d13d9a45afac4ae69c3e391d5a.png');
 		background-size: 100%;
@@ -478,7 +502,7 @@
 		position: relative;
 		// height: 200px;
 		.pointbox{
-			margin-top: 69px;
+			margin-top: 79px;
 			display: inline-block;
 			padding: 9px 37px 9px 21px;
 			background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.6) 51%, rgba(0,0,0,0) 100%);
@@ -500,20 +524,22 @@
 		.fuelbtn{
 			width: 180rpx;
 			height: 64rpx;
-			background: rgba(0,0,0,0.6);
-			border-radius: 32rpx 0rpx 0rpx 32rpx;
+			border-right: 1px solid rgba(255,255,255,0.7);
+// background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.6) 51%, rgba(0,0,0,0) 100%);
+			// border-radius: 32rpx 0rpx 0rpx 32rpx;
 			font-size: 28rpx;
 			text-align: center;
 			line-height: 64rpx;
 			font-weight: 500;
 			color: #FFFFFF;
-			margin-bottom: 32rpx;
+			// margin-bottom: 32rpx;
 		}
 		.rateBtn{
 			width: 180rpx;
 			height: 64rpx;
-			background: $btn-base;
-			border-radius: 32rpx 0rpx 0rpx 32rpx;
+			// background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.6) 51%, rgba(0,0,0,0) 100%);
+			// background: $btn-base;
+			// border-radius: 32rpx 0rpx 0rpx 32rpx;
 			text-align: center;
 			line-height: 64rpx;
 			font-size: 28rpx;

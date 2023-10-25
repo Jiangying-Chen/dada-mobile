@@ -8,11 +8,11 @@
 				</view>
 				<view class="rightview">
 					<view class="">
-						1567-123-456
+						不想被打扰，目前还没有
 					</view>
-					<view class="time">
+					<!-- <view class="time">
 						工作日7:00-21:00
-					</view>
+					</view> -->
 				</view>
 			</view>
 			
@@ -21,8 +21,8 @@
 					客服微信
 				</view>
 				<view class="rightview">
-					YDKKKKK
-					<span @tap="copyFont('YDKKKKK')">复制</span>
+					tongwenzhe
+					<span @tap="copyFont('tongwenzhe')">复制</span>
 				</view>
 			</view>
 			<view class="uni-flex uni-row infoview" style="justify-content: space-between;">
@@ -35,7 +35,7 @@
 					</view>
 				</view>
 				<view class="rightview">
-					<image src="https://mallwj.hm-myy.cn/168991908582720230721135805.png" mode="" show-menu-by-longpress></image>
+					<image src="https://xiaoyuan.pujinetwork.com/bbs/20230906/4d0c040e38724a1b8f4d4b496f9b88d3.jpg " mode="" show-menu-by-longpress></image>
 				</view>
 			</view>
 		</view>

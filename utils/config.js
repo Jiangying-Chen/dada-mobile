@@ -10,10 +10,10 @@ const shareH5Url = "https://h5.linfeng.tech/#/"; //H5分享路径
 
 
 //线上环境配置
-const baseUrl = "bbs.hm-map.cn";
+// const baseUrl = "bbs.hm-map.cn";
+const baseUrl = 'houtai.pujinetwork.com'
 const domain = 'https://' + baseUrl + "/app/"; 
 const websocketUrl = 'wss://'+baseUrl+'/socket/'
-
 // const baseUrl = "192.168.0.90:8885";
 // const domain = 'http://' + baseUrl + "/app/"; 
 // const websocketUrl = 'ws://'+baseUrl+'/socket/';

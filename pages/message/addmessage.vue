@@ -13,7 +13,7 @@
 			<view class="top_tite">
 				@我的
 			</view>
-			<view class="applylist" v-if="noticeList.length>0">
+			<view class="applylist" v-if="callList.length>0">
 				<view class="personview uni-flex uni-row" style="justify-content: space-between;"  v-for="item in callList" @click="navToDetail(item)">
 					<view class="uni-flex uni-row personinfo">
 						<view class="left-image">
@@ -39,15 +39,79 @@
 			<view class="msg-empty" v-else>
 				<text class="txt">暂无消息</text>
 			</view>
-			
 		</view>
+		<!-- 回复我的 -->
+		<view>
+			<view class="top_tite">
+				回复我的
+			</view>
+			<view class="applylist" v-if="replyList.length>0">
+				<view class="personview uni-flex uni-row" style="justify-content: space-between;"  v-for="item in replyList" @click="navToDetail(item)" :key='item.id'>
+					<view class="uni-flex uni-row personinfo">
+						<view class="left-image">
+							<image :src="getUserAvatar(item)" mode=""></image>
+						</view>
+						<view class="left-info" style="flex: 1 1 0%;">
+							<view class="info-name">
+								{{getUserName(item)}}
+							</view>
+							<view class=" info-time">
+								{{getUserMessage(item) ||'快来看看我的评论'}}
+							</view>
+						</view>
+					</view>
+					<view class="right-btn uni-flex uni-row">
+						<view class="btn-add">
+						     查看
+						</view>
+						
+					</view>
+				</view>
+			</view>
+			<view class="msg-empty" v-else>
+				<text class="txt">暂无消息</text>
+			</view>
+		</view>
+		
+		<view>
+			<view class="top_tite">
+				点赞我的
+			</view>
+			<view class="applylist" v-if="likeDotList.length>0">
+				<view class="personview uni-flex uni-row" style="justify-content: space-between;"  v-for="item in likeDotList" @click="navToDetail(item)" :key='item.id'>
+					<view class="uni-flex uni-row personinfo">
+						<view class="left-image">
+							<image :src="getUserAvatar(item)" mode=""></image>
+						</view>
+						<view class="left-info" style="flex: 1 1 0%;">
+							<view class="info-name">
+								{{getUserName(item)}}
+							</view>
+							<view class="info-time">
+								给你一个大大的点赞
+							</view>
+						</view>
+					</view>
+					<view class="right-btn uni-flex uni-row">
+						<view class="btn-add">
+						     查看
+						</view>
+						
+					</view>
+				</view>
+			</view>
+			<view class="msg-empty" v-else>
+				<text class="txt">暂无消息</text>
+			</view>
+		</view>
+		
 		
 		<!-- 好友申请 -->
 		<view class="top_tite">
 			好友申请
 		</view>
 		<view class="applylist" v-if="addList.length>0">
-			<view class="personview uni-flex uni-row" style="justify-content: space-between;"  v-for="item in addList">
+			<view class="personview uni-flex uni-row" style="justify-content: space-between;"  v-for="item in addList" :key='item.id'>
 				<view class="uni-flex uni-row personinfo">
 					<view class="left-image">
 						<image :src="getUserAvatar(item)" mode=""></image>
@@ -80,7 +144,7 @@
 			可能认识的人
 		</view>
 		<view class="applylist" v-if="isApplyList.length>0">
-			<view class="personview uni-flex uni-row" style="justify-content: space-between;"  v-for="item in isApplyList">
+			<view class="personview uni-flex uni-row" style="justify-content: space-between;"  v-for="item in isApplyList" :key='item.uid'>
 				<view class="uni-flex uni-row personinfo">
 					<view class="left-image">
 						<image :src="item.avatar" mode=""></image>
@@ -95,14 +159,14 @@
 					</view>
 				</view>
 				<view class="right-btn uni-flex uni-row">
-					<view class="btn-add" @tap="open(item)">
+					<view class="btn-add" @click="open(item)">
 						+ 好友
 					</view>
 				</view>
 			</view>
 		</view>
 		
-		<u-popup v-model="openPop" mode="center" border-radius="14">
+		<u-popup v-model="openPop" mode="center" border-radius="14" :mask-close-able ='false'>
 			<view class="informationShow-centent">
 					<view class="title">申请添加好友</view>
 					<view class="flex-items box">
@@ -140,6 +204,12 @@
 			},
 			addList(){
 				return this.noticeList.filter(v=>v.type=='person-apply');
+			},
+			replyList(){
+				return this.noticeList.filter(v=>v.type=='reply-post');
+			},
+			likeDotList(){
+				return this.noticeList.filter(v=>v.type=='like-dot');
 			}
 		},
 		components: {
@@ -223,7 +293,11 @@
 			getUserMessage(item){
 				let info = JSON.parse(item.information)
 				if(info.applyMessage){
-					return info.applyMessage;
+					let str = info.applyMessage;
+					if(str.length>=17){
+						str=str.substr(0,17) +'...';
+					}
+					return str;
 				}
 				return "";
 			},
@@ -234,6 +308,7 @@
 				}).then(res => {
 					
 					this.isApplyList = res.result.content;
+					console.log('this.isApplyList',this.isApplyList)
 							
 				})
 			},
@@ -313,6 +388,7 @@
 			
 			// 添加好友
 			open(row) {
+				console.log('row',row)
 				this.userInfo = row;
 				this.openPop = true
 				this.notation = this.userInfo.username

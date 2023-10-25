@@ -47,7 +47,8 @@
 					<view class="post-content" v-if="item.type != 3">
 						<view class="" style="font-weight: bold;"> {{item.title}}</view>
 						<!-- <u-parse :html="item.content"></u-parse> -->
-						<rich-text class="post-text" :nodes="item.content| formatRich"></rich-text>
+						<rich-text class="post-text" :nodes="formatRich(item.content)"></rich-text>
+						<!-- <u-parse class="post-text" @longpress="onCopy" :html="item.content || formatRich(item.content)"></u-parse> -->
 						<!-- 帖子类型 -->
 						<!--  -->
 						<block v-if="item.type == 1">
@@ -161,6 +162,7 @@
 
 <script>
 	import linfengAd from "../../components/linfeng-ad/linfeng-ad.vue"
+	import ulazyload from "../../uview-ui/components/u-lazy-load/u-lazy-load.vue"
 	export default {
 		name: 'post-list',
 		props: {
@@ -201,9 +203,10 @@
 			},
 		},
 		filters: {
-			formatRich(val){
-				return "<div style='overflow : hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 4; -webkit-box-orient: vertical;word-break: break-all;'>" + val + "</div>"
-			}
+			// formatRich(val){
+			// 	console.log("val",val)
+			// 	return "<div style='overflow : hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 4; -webkit-box-orient: vertical;word-break: break-all;'>" + val + "</div>"
+			// }
 		},
 		data() {
 			return {
@@ -221,7 +224,9 @@
 				isVip: 0,
 				imageClass: ['', 'one-img', 'two-img', 'three-img', 'four-img', 'five-img', 'six-img', 'seven-img',
 					'eight-img', 'nine-img'
-				]
+				],
+				userInfo:{},
+				
 			};
 		},
 		watch: {
@@ -251,12 +256,22 @@
 		created() {
 			let userInfo = uni.getStorageSync('userInfo');
 			if (userInfo) {
+				this.userInfo = userInfo;
 				this.sessionUid = userInfo.uid;
 				this.isVip = uni.getStorageSync('userInfo').vip
 			}
 		},
 		methods: {
-
+            formatRich(val){
+            return val ? val.replace(/[<">']/g, (a) => {
+                        return {
+                           '<': '&lt;',
+                           '"': '&quot;',
+                           '>': '&gt;',
+                           "'": '&#39;'
+                      }[a]
+                   }) : '';
+            				},
 			copyPageUrl(id) {
 				let that = this;
 				uni.setClipboardData({
@@ -363,8 +378,64 @@
 						if (res.code === 0) {
 							this.list[index].isCollection = true;
 							this.list[index].collectionCount++;
+							
+							this.sendMessage('like-dot',id,index)
 						}
 					});
+			},
+			//发送信息
+			sendMessage(type,postId,index){
+				let m = {
+					senderId: this.userInfo.uid,
+					senderName: this.userInfo.username,
+					senderAvatar: this.userInfo.avatar,
+					receiverId: this.list[index].uid, //接收者
+					notation: '',
+					applyMessage: '',
+					postId:postId,
+				}
+				let msg = {
+					type: type,
+					data: m
+				}
+				let that = this
+				uni.sendSocketMessage({
+					data: JSON.stringify(msg),
+					success() {
+					},
+					fail(res) {
+						websocket.initConnect()
+						setTimeout(function() {
+						    that.retrySubmit(type,postId,index);
+						}, 1200);
+					}
+				})
+			},
+			//尝试重连
+			retrySubmit(){
+				let m = {
+					senderId: this.userInfo.uid,
+					senderName: this.userInfo.username,
+					senderAvatar: this.userInfo.avatar,
+					receiverId: this.list[index].uid, //接收者
+					notation: '',
+					applyMessage: '',
+					postId:postId,
+				}
+				let msg = {
+					type: type,
+					data: m
+				}
+				let that = this
+				uni.sendSocketMessage({
+					data: JSON.stringify(msg),
+					success() {
+						
+					},
+					fail(res) {
+						websocket.initConnect()
+					}
+				})
 			},
 			// 置顶帖子
 			postTop() {
@@ -416,6 +487,7 @@
 					});
 			},
 			previewImage(url, urls) {
+				console.log(111111111111111111)
 				uni.previewImage({
 					current: url, // 当前显示图片的http链接
 					urls: urls // 需要预览的图片http链接列表
@@ -664,6 +736,7 @@
 	}
 
 	.post-text {
+		white-space: pre-wrap;
 		display: -webkit-box;
 		-webkit-box-orient: vertical;
 		-webkit-line-clamp: 2;

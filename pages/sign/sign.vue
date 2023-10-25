@@ -4,7 +4,7 @@
 			<view class="headerCon acea-row row-between-wrapper">
 				<view class="left acea-row row-between-wrapper">
 					<view class="pictrue">
-						<image :src="userInfo.avatar" />
+						<image :src="userInfo.avatar" lazy-load/>
 					</view>
 					<view class="text">
 						<view class="line1">{{ userInfo.username || '' }}</view>

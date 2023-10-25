@@ -1,12 +1,13 @@
 <template>
 <view class="container">
   <view class="my-lottery row-between wrap" v-if="status==1">
-    <view v-for="(item, index) in lotteryData" :key="index" :class="(item.type == 1 ? 'lotty-btn' : 'lottery-item') + ' column-center ' + (activeIndex == index ? 'active' : '')" style="width: 180rpx;height: 180rpx;" @tap="onLotteryClick(item.type)">
+    <view v-for="(item, index) in lotteryData" :key="index" :class="(!item.id ? 'lotty-btn' : 'lottery-item') + ' column-center ' + (activeIndex == index ? 'active' : '')" style="width: 180rpx;height: 180rpx;" @tap="onLotteryClick(item.type)">
       <image :src="item.url" style="width: 80rpx;height: 80rpx"></image>
 	  <text  v-if="item.type == 1&&item.number" class='xs mt20' style="'color: #ED3720';font-weight: 600;'">{{item.number}}{{item.name}}</text>
 	  <text  v-else-if="item.type == 1 && !item.number" class='xs mt20' style="'color: #ED3720';font-weight: 600;'">{{item.name}}</text>
 	  <text  v-else-if="item.type == 2" class='nr mt10' style="'color: #743C3C';font-weight: 600;'">{{item.name}}</text>
 	  <text  v-else-if="item.type == 3" class='nr mt10' style="'color: #aaaaff';font-weight: 600;'">￥{{item.number}}{{item.name}}</text>
+	  <text  :lines="1" v-else-if="item.type == 4" class='nr mt10' style="'color: #aaaaff';font-weight: 600;'">{{item.name}}</text>
     </view>
   </view>
   <view class="activity-null row-center" v-else>
@@ -38,6 +39,10 @@ export default {
 
   components: {},
   props: {
+	  show:{
+		type:Boolean,
+
+	  },
     // 转盘数据
     lotteryData: {
       type: Array,
@@ -60,13 +65,69 @@ export default {
 
   methods: {
     onLotteryClick(type) {
-      if (type == 1) {
-        this.start();
+      if (type == 1 && !this.isLottery ) {
+		 this.$emit('showpop',true)
       }
     },
-
+    userLotteryFun2() {
+		this.$H.get('luckDraw/start/advertising').then(res => {
+				if (res.code == 0) {
+				      let {
+				        id
+				      } = res.result;
+				      let index = this.lotteryData.findIndex(item => {
+				        return item.id == id;
+				      });
+					  console.log('index:',index)
+					  console.log('this.lotteryData:',this.lotteryData)
+				      switch (index) {
+				        case 0:
+				          index = 0;
+				          break;
+				
+				        case 1:
+				          index = 1;
+				          break;
+				
+				        case 2:
+				          index = 2;
+				          break;
+				
+				        case 3:
+				          index = 7;
+				          break;
+				
+				        case 5:
+				          index = 3;
+				          break;
+				
+				        case 6:
+				          index = 6;
+				          break;
+				
+				        case 7:
+				          index = 5;
+				          break;
+				
+				        case 8:
+				          index = 4;
+				          break;
+				
+				        default:
+				          index = -1;
+				          break;
+				      }
+				      this.luckyOrder = index
+				      this.result = res.result.text; 
+					  
+				      this.$emit("begin");
+				      this.startLotteryFun();
+				}
+			});
+    
+    },
     userLotteryFun() {
-		this.$H.get('luckDraw/start').then(res => {
+		this.$H.get('luckDraw/start/1').then(res => {
 				if (res.code == 0) {
 				      let {
 				        id
@@ -175,11 +236,18 @@ export default {
     // 根据奖品在数据中的index，获取奖品在转盘中的位置
     getLuckyItemOrderFun(index) {},
 
-    start(e) {
+    start(flag) {
       // 如果还没开始转动,开始转动转盘
       if (!this.isLottery) {
         this.isLottery = true
-        this.userLotteryFun();
+		if(flag == true){
+			//直接抽
+			this.userLotteryFun();
+		}
+		if(flag == false){
+			//看广告抽
+			this.userLotteryFun2()
+		}
       }
     },
 
@@ -203,7 +271,8 @@ export default {
 </script>
 <style>
 .my-lottery {
-  background-image: url(../../static/images/choujiang_light.png);
+  /* background-image: url(../../static/images/choujiang_light.png); */
+  background-image: url(@/static/images/choujiang_light.png);
   width: 640rpx;
   height: 640rpx;
   background-size: 100% 100%;
@@ -211,12 +280,12 @@ export default {
 }
 
 .my-lottery .lottery-item {
-  background-image: url(../../static/images/choujiang_block.png);
+  background-image: url(@/static/images/choujiang_block.png);
   background-size: 100% 100%;
 }
 
 .my-lottery .lotty-btn {
-  background-image: url(../../static/images/choujiang_button.png);
+  background-image: url(@/static/images/choujiang_button.png);
   background-size: 100% 100%;
 }
 
@@ -248,7 +317,7 @@ export default {
     justify-content: center;
 }
 .mt10 {
-    margin-top: 10rpx;
+    margin-top: 20rpx;
 }
 
 .mt20 {
@@ -260,9 +329,9 @@ export default {
     justify-content: center;
 }
 .xs {
-    font-size: 24rpx;
+    font-size: 22rpx;
 }
 .nr {
-  font-size: 28rpx;
+  font-size: 22rpx;
 }
 </style>

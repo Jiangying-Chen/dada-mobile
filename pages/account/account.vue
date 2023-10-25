@@ -82,7 +82,7 @@
 			</view>
 			
 			<!-- 兑换弹窗 -->
-			<u-popup v-model="show" mode="center" border-radius="14">
+			<u-popup v-model="show" mode="center" border-radius="14" :mask-close-able ='false'>
 				<view class="informationShow-box">
 					<view class="flex-items flex-column informationShow-centent">
 						<view class="mar-top-60">

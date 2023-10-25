@@ -122,11 +122,22 @@
 										iv: e.detail.iv,
 									}).then(res2 => {
 										uni.setStorageSync("hasLogin", true);
-										uni.setStorageSync("token", res2.result.token);
-										this.getUserInfo();
-										uni.navigateTo({
+										let p = new Promise((resolve,reject)=>{
+											if(res2.result.token !== ''){
+												resolve(uni.setStorageSync("token", res2.result.token))
+											}
+										})
+										p.then(
+										  this.getUserInfo()
+										  uni.navigateTo({
 											url:'/pages/login/interest'
 										})
+										)
+										// uni.setStorageSync("token", res2.result.token);	
+										// this.getUserInfo();
+										// uni.navigateTo({
+										// 	url:'/pages/login/interest'
+										// })
 										// uni.navigateBack({});
 									})
 								}

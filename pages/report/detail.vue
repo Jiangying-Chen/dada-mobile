@@ -24,7 +24,7 @@
 		<!-- 图片截图 -->
 		<view class="contentNav">截图证据</view>
 		<block>
-			<u-upload ref="uUpload" :file-list="fileList" :deletable="false" :auto-upload="false"></u-upload>
+			<u-upload ref="uUpload" :file-list="fileList" :deletable="false" :auto-upload="false" :size-type="['compressed']"></u-upload>
 		</block>
 		<u-line length="690rpx" margin="30rpx 0 0 30rpx" color="#F6F6F6"></u-line>
 		<!-- 反馈 -->

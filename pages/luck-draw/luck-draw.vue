@@ -11,12 +11,12 @@
 				</navigator>
 			</view>
 			<view class="wheel-box">
-				<view class="wheel-container">
+				<view class="wheel-container" id="containerbox">
 					<view class="row-center">
 						<view class="notice-container row">
 							<image src="/static/images/icon_notice.png" class="icon"></image>
 							<view class="marquee-box ml20" v-if="record.length > 0">
-								<swiper autoplay vertical style="height: 33rpx">
+								<swiper autoplay vertical style="height: 33rpx" interval="2000" :circular='true'>
 									<swiper-item v-for="(item, index) in record" :key="index" class="row">
 										<text class="xs marquee_text" style="color: #F9EDDD;">{{item.text}}</text>
 									</swiper-item>
@@ -28,8 +28,12 @@
 						</view>
 					</view>
 					<view class="wheel">
-						<luckDraw :lotteryData="lists" :status="status" :luckyOrder="3" :circleTimes="30" @begin="startLottery" @finish="lotteryFinish"></luckDraw>
+						<luckDraw :show='show' ref="luckDraw" :lotteryData="lists" :status="status" :luckyOrder="3" :circleTimes="30" @begin="startLottery" @finish="lotteryFinish" @showpop='showpop'></luckDraw>
 					</view>
+					<!-- <view class="flex-box">
+						<image src="https://xiaoyuan.pujinetwork.com/bbs/20230925/712b90b21e8046d8a38aeeded2327806.png" class="icon-vd" mode="widthFix"></image>
+						<view class="num" @click="showAdd">增加抽奖次数</view>
+					</view> -->
 					<view class="rules-box">
 						<view class="lg" style="color: #FCD7D2;margin-bottom: 30rpx;">活动规则</view>
 						<text class="sm" style="color: #FCD7D2;">{{rule}}
@@ -39,11 +43,29 @@
 			</view>
 			<view class="xs row-center" style="color: #FFF2D9;margin-top: 30rpx">本活动的所有奖品，均由本平台提供</view>
 		</view>
+		<u-popup v-model="show" mode='center' border-radius="30" close-icon-pos='top-right' close-icon-color='#ffffff' closeable='true'>
+			<view class="showpoptext">
+				<text>请选择抽奖方式</text>
+			</view>
+		          <view class="showPop">
+		          			<view class="get-popbtn row-center md br60" @tap="popClose">
+								<view class="flex-box">
+									<view>消耗积分抽奖</view>
+								</view>		
+		          			</view>
+							<view class="get-popbtn row-center md br60" @click="showAdd">
+								<view class="flex-box">
+								<!-- 	<image src="https://xiaoyuan.pujinetwork.com/bbs/20230925/712b90b21e8046d8a38aeeded2327806.png" class="icon-vd" mode="widthFix"></image> -->
+									<view>看广告免费抽奖</view>
+								</view>
+							</view>
+		          	</view>
+		</u-popup>
 		<u-popup v-model="showResult" mode="center">
 			<view class="result-popup column-center">
 				<view class="result-container column-between">
 					<view class="row-center" style="padding:0 118rpx;margin-top: 90rpx">
-						<text style="color: #F95F2F;font-size: 62rpx;text-align: center;">{{resultText}}</text>
+						<text style="color: #F95F2F;font-size: 50rpx;text-align: center;">{{resultText}}</text>
 					</view>
 					<view class="mb20">
 						<view class="get-btn row-center md br60" @tap="onClose">
@@ -51,23 +73,22 @@
 						</view>
 					</view>
 				</view>
-				<view style="margin-top: 50rpx" @tap="onClose">
-					<image src="/static/images/icon_close.png" style="width: 62rpx;height: 62rpx;"></image>
-				</view>
 			</view>
 		</u-popup>
 	</view>
 </template>
 
 <script>
-	
-	import luckDraw from "../../components/my-lottery/my-lottery.vue"
+	import luckDraw from "@/subpages/content/my-lottery.vue"
+	var videoAd = null;
 	export default {
 		components: {
 			luckDraw
 		},
 		data() {
 			return {
+				show:false,
+				num:0,
 				status:'',
 				rule:'',
 				// 抽奖列表
@@ -83,16 +104,96 @@
 				integral: false,
 			};
 		},
-		components:{
-			luckDraw
-		},
 		onLoad: function(options) {
 			this.getPrizeFun();
+			// 在页面onLoad回调事件中创建激励视频广告实例
+			if (wx.createRewardedVideoAd) {
+			  videoAd = wx.createRewardedVideoAd({
+			    adUnitId: 'adunit-d2bf124482bc010e'
+			  })
+			  videoAd.onLoad(() => {})
+			  videoAd.onError((err) => {})
+			 // videoAd.onClose((res) => {})
+			}
 		},
+		
 		methods: {
+			popClose(){
+				this.show = false
+				this.$refs.luckDraw.start(true)
+			},
+			//弹窗
+			showpop(val){
+				console.log('val',val)
+				this.show = val
+			},
+			//接入广告
+			showAdd(){
+				// 用户触发广告后，显示激励视频广告
+				if (videoAd) {
+				  videoAd.show().catch(() => {
+				    // 失败重试
+				    videoAd.load()
+				      .then(() => videoAd.show())
+				      .catch(err => {
+				        console.log('激励视频 广告显示失败')
+				      })
+				  })
+				  
+				  try{
+						if(videoAd.closeHandler){
+						  videoAd.offClose(videoAd.closeHandler);
+						  console.log("videoAd.offClose卸载成功");
+						}
+					} catch (e) {
+						console.log("videoAd.offClose 卸载失败");
+						console.error(e);
+					}
+					videoAd.closeHandler=  (res)=> {
+						// 用户点击了【关闭广告】按钮
+						if (res && res.isEnded || res === undefined) {
+							// 正常播放结束，可以下发游戏奖励
+							 console.log('正常播放结束，可以下发游戏奖励')
+							this.addNum();
+							this.$refs.luckDraw.start(false)
+						} else {
+							console.log('播放中途退出，不下发游戏奖励')
+						}
+						this.show = false
+					};
+				 videoAd.onClose(videoAd.closeHandler);
+				}
+				
+				
+			},
+			
+			//增加次数，看广告
+			addNum(){
+				this.$H.post(`luckDraw/addLuckDrawCount`).then(res => {
+					console.log('增加次数res',res)
+					if(res.code == 0){
+						this.getPrizeFun()
+                   // this.getNum()
+						// if(this.askComplete==false){
+						// 	this.$H.post(`point/task/complete/-1?alreadyNum=1&type=black_hole_qa`).then(res => {
+						// 		this.$store.commit('SET_ASKCOMPLETE',true)
+						// 	})
+						// }
+					}
+					console.log(this.surplus)
+				})
+			},
+			getNum(){
+				this.$H.get(`luckDraw/getPrize`).then(res => {
+					console.log('剩余次数res',res)
+					if(res.code == 0){
+						this.surplus = res.result.surplus;
+					}
+				})
+			},
 			getPrizeFun() {
 				this.$H
-					.get('luckDraw/getPrize').then(res => {
+					.get('luckDraw/getPrize/').then(res => {
 						if (res.code == 0) {
 									let {
 										status,
@@ -135,7 +236,65 @@
 	};
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+	//弹窗
+	.showpoptext {
+		padding-top: 70rpx;
+		width: 545rpx;
+		background-color: #ed3720;
+		justify-content: center;
+		text-align: center;
+		color: #F4F4F5;
+		font-size: 20px;
+	}
+	.showPop {
+		padding-left: 20rpx;
+		padding-right: 20rpx;
+		flex-wrap:nowrap;
+		display: flex;
+		// flex-direction: column;
+		background-color: #ed3720;
+		width: 545rpx;
+		height: 250rpx;
+		justify-content: space-between;
+		align-items: center;
+		.get-popbtn {
+			font-size: 12px;
+			margin-top: 60rpx;
+			width: 230rpx;
+			// flex: 1;
+			height: 70rpx;
+			color: #7B3200;
+			background: linear-gradient(180deg, #FEF0B0 0%, #FFA92E 100%);
+		}
+	}
+	#containerbox {
+		width: 97%;
+		position: absolute;
+		left: 10rpx;
+	}
+	.flex-box{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		//width: 438rpx;
+		width: 100%;
+		height: 80rpx;
+		// background: linear-gradient(180deg, #6322EF 0%, #3E00C3 100%);
+		// background-color:#ffd8ba;
+		box-shadow: 0rpx 8rpx 12rpx 0rpx rgba(52,16,129,0.2);
+		border-radius: 49rpx;
+		.icon-vd{
+			width: 42rpx;
+			height: 34rpx;
+			// background: #222222;
+		}
+		.num{
+			font-size: 32rpx;
+			margin-left: 20rpx;
+			font-weight: bold;
+		}
+	}
 	.icon{
 		min-height: 34rpx;
 		min-width: 34rpx;
@@ -254,6 +413,7 @@
 			}
 
 			.wheel-box {
+				position: relative;
 				padding: 0 30rpx;
 
 				.wheel-container {

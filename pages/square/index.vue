@@ -5,7 +5,7 @@
 		<!-- <top-nave :bar-height="statusBarHeight" :nav-height="navigationBarHeight" title="基地"></top-nave> -->
 		<view class="myboxes">
 			<view> 
-			   <image class="code"  src="https://xiaoyuan.pujinetwork.com/bbs/20230901/fdeba5e8465746b790bda0481fe33217.jpg"></image>
+			   <image class="code" @tap.stop="previewImage(imgurl)" :src="imgurl"></image>
 			</view>
 			<view class="title">扫码关注公众号 ，</view>
 			<view class="title">在公众号回复“黑洞助手”，根据提示进行操作</view>
@@ -31,6 +31,7 @@
 		},
 		data() {
 			return {
+	            imgurl:'https://xiaoyuan.pujinetwork.com/bbs/20230901/fdeba5e8465746b790bda0481fe33217.jpg',
 				navigationBarHeight: 0,
 				statusBarHeight: 0,
 				myNumber:0,
@@ -60,6 +61,14 @@
 			this.getNum()
 		},
 		methods: {
+			previewImage(url) {
+				let imgArray = []
+				imgArray[0] = url
+				uni.previewImage({
+					current:0,
+					urls: imgArray // 需要预览的图片http链接列表
+				});
+			},
 			//查询剩余次数
 			getNum(){
 				this.$H.get(`chat/queryEffectiveCount `).then(res => {

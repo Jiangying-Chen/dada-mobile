@@ -74,7 +74,7 @@
 		</view>
 		
 
-		<u-popup v-model="isShowTs" mode="center" border-radius="18">
+		<u-popup v-model="isShowTs" mode="center" border-radius="18" :mask-close-able ='false'>
 			<view class="infobox">
 				<view class="infobox-title">
 					矿石采集

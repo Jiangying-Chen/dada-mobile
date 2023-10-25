@@ -3,7 +3,7 @@
 		<top-nave :bar-height="statusBarHeight" :nav-height="navigationBarHeight" title="商品详情"
 			:isback="true"></top-nave>
 		<view class="productimage">
-			<image :src="detail.thumbnail" mode="widthFix"></image>
+			<image :src="detail.thumbnail" mode="widthFix" lazy-load></image>
 		</view>
 		<view class="viewbox">
 			<view class="productname">

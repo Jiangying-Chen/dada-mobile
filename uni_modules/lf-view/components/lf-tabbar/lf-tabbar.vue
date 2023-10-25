@@ -108,37 +108,61 @@ export default {
 	},
 	computed:{
 		userInfo(){
-			return this.$store.state.loginUserInfo
+			return this.$store.state.loginUserInfo ||{}
 		}
 	},
 	methods: {
 		onTab(e, index) {
-			if(e.midButton){
-			   if(this.userInfo.uid){
-				   //未实名
-				   if(!this.userInfo.identity){
-					   this.isOpenRealName = true;
+			console.log('')
+			if(e.pagePath=='/pages/post/add?type=1'){
+				   if(this.userInfo && this.userInfo.uid){
+					   if(this.userInfo.type==1){
+						   uni.navigateTo({
+						   		url:e.pagePath
+						   })
+					   }else{
+						   //未实名
+						   let isRN = getApp().globalData.isRealName;
+						   if(isRN==1){
+							   if(this.userInfo.identity==null || this.userInfo.identity==''){
+								   console.log('未实名')
+								   this.isOpenRealName = true;
+							   }else{
+								   uni.navigateTo({
+										url:e.pagePath
+								   })
+							   }
+						   }else{
+							   uni.navigateTo({
+									url:e.pagePath
+							   })
+						   }
+					   }
+					   
+				   }else{
+					   this.$u.toast('未登录，暂不支持发帖');
+					   this.$store.commit('SET_ISJUMP',false)
+					   setTimeout(()=>{
+						   uni.navigateTo({
+							  url:'/pages/user/login'
+						   })
+					   },500)
 					   return
 				   }
-				   
-			   }else{
-				   this.$u.toast('未登录，暂不支持发帖');
-				   // setTimeout(()=>{
-					  //  uni.navigateTo({
-					  //  	  url:'/pages/user/login'
-					  //  })
-				   // },500)
-				   return
-			   }
-			   
-			}
-			
-			if (!e.isCustom) {
-				uni.switchTab({
-					url: e.pagePath
-				});
+			}else if(e.pagePath=='/pages/store/index' || e.pagePath =='/pages/my/jidi'){
+				 if(this.userInfo && this.userInfo.uid){
+					 uni.switchTab({
+						url: e.pagePath
+					 });
+				 }else{
+					this.$store.commit('SET_ISJUMP',false)
+					uni.navigateTo({
+						url:'/pages/user/login'
+					})
+					return
+				 }
 			}else{
-				uni.navigateTo({
+				uni.switchTab({
 					url: e.pagePath
 				});
 			}
@@ -235,7 +259,7 @@ export default {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
-	z-index: 99999;
+	z-index: 999;
 	//background-color: #001937;
 	background-color: #2A0A6D;
 	//height: 52px;

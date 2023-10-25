@@ -14,6 +14,7 @@
 					:before-upload="beforeUpload"
 					max-count="1"
 					@on-uploaded="onUploaded1"
+					:size-type="['compressed']"
 				></u-upload>
 			</u-form-item>
 			<u-form-item :required="true" label="圈子背景" label-position="top">
@@ -26,6 +27,7 @@
 					:before-upload="beforeUpload"
 					max-count="1"
 					@on-uploaded="onUploaded2"
+					:size-type="['compressed']"
 				></u-upload>
 			</u-form-item>
 		</view>

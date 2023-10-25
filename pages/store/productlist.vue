@@ -92,6 +92,14 @@
 					pageSize: 10
 				}).then(res => {
 					res.result.records.forEach(v => {
+            // 缩减数字长度
+            // if(v.points>=10000){
+            //   let pointStr = String(v.points)
+            //   let points = pointStr.slice(0,-4)
+              
+            //   v.points = points + '万'
+            //   console.log(v.points)
+            // }
 						that.productList.push(v)
 					})
 					if (res.result.total == that.pages) {
@@ -195,6 +203,7 @@
 			}
 			.productbuy{
 				margin: 20px 12px;
+        align-items: center;
 				.productpoint{
 					font-size: 16px;
 					font-weight: 800;
@@ -209,6 +218,7 @@
 					line-height: 24px;
 					text-align: center;
 					width: 57px;
+          height: 24px;
 					background: $btn-base;
 					border-radius: 13px 13px 13px 13px;
 					font-size: 12px;

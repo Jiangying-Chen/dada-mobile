@@ -34,7 +34,7 @@
 			<u-line length="690rpx" color="#F6F6F6" margin="30rpx 0 33rpx 0"></u-line>
 			<view class="contentNav">收款码截图</view>
 			<view style="transform: translateX(-10rpx);">
-				<u-upload ref="uUpload" :size-type="['original']" name="Image" :max-count="1" :header="header"
+				<u-upload ref="uUpload" :size-type="['compressed']" name="Image" :max-count="1" :header="header"
 					:action="uploadImgUrl" @on-uploaded="submit" :auto-upload="false" :custom-btn="true">
 					<view slot="addBtn" class="slot-btn">
 						<u-icon name="plus" size="40" color="#666666"></u-icon>

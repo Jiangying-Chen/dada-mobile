@@ -28,7 +28,7 @@
 			<navigator class="topic-wrap" hover-class="none" :url="'/pages/topic/detail?id=' + item.id"
 				v-for="(item, index) in topicList" :key="index">
 				<view class="info-wrap">
-					<image class="cover-img" mode="aspectFill" :src="item.coverImage"></image>
+					<image class="cover-img" mode="aspectFill" :src="item.coverImage" lazy-load></image>
 					<view class="right">
 						<view class="name">{{ item.topicName }}</view>
 						<view class="count-wrap">
@@ -38,7 +38,7 @@
 					</view>
 				</view>
 				<view class="post-img-wrap" v-if="item.imgList.length > 0">
-					<image mode="aspectFill" v-for="(item2, index2) in item.imgList" :key="index2" :src="item2"></image>
+					<image mode="aspectFill" v-for="(item2, index2) in item.imgList" :key="index2" :src="item2" lazy-load></image>
 				</view>
 			</navigator>
 			<!-- 加载状态 -->

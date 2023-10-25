@@ -93,6 +93,12 @@
 				"navigationBarTitleText": "星际航行",
 				"navigationStyle":"custom"
 			}
+		},{
+			"path": "pages/index/advDetail",
+			"style": {
+				"navigationBarTitleText": "详情"
+				// "navigationStyle":"custom"
+			}
 		},
 		{
 			"path": "pages/my/jidi",
@@ -471,25 +477,6 @@
             
         }
         ,{
-            "path" : "pages/luck-draw/luck-draw",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "抽奖",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/luck-draw/prize-record",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "抽奖记录",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        
-        ,{
             "path" : "pages/user/protocol",
             "style" :                                                                                    
             {
@@ -637,6 +624,33 @@
 					}
 				},
 				{
+				    "path" : "luckdraw/luckdetail",
+				    "style" :                                                                                    
+				    {
+				        "navigationBarTitleText": "兑换详情",
+				        "enablePullDownRefresh": false
+				    }
+				    
+				},
+				{
+				    "path" : "luckdraw/prize-record",
+				    "style" :                                                                                    
+				    {
+				        "navigationBarTitleText": "抽奖记录",
+				        "enablePullDownRefresh": false
+				    }
+				    
+				},
+				{
+				    "path" : "luckdraw/luck-draw",
+				    "style" :                                                                                    
+				    {
+				        "navigationBarTitleText": "抽奖",
+				        "enablePullDownRefresh": false
+				    }
+				    
+				},
+				{
 				    "path" : "article/add",
 				    "style" :                                                                                    
 				    {
@@ -645,14 +659,14 @@
 				    }
 				    
 				}
-			    ,{
+			    ,
+				{
                     "path" : "index-category/index-category",
                     "style" :                                                                                    
                 {
                     "enablePullDownRefresh": true,
 					"navigationStyle": "custom"
                 }
-                
                 }
             ]
 		}

@@ -12,7 +12,7 @@
 						<span class="addbtnxq"  v-if="isJoin ==false" @tap="addTopic()">我要入驻</span>
 					</view>
 					<view class="top-name">
-						{{topicName}}
+						{{topicName || ''}}
 					</view>
 				</view>
 			</view>
@@ -58,10 +58,10 @@
 			</view>
 		</view>
 		<!-- 轮播图 -->
-		<!-- <view class="swiper-box">
-			<u-swiper @click="onSwiper" :list="swiperList" name="img" border-radius="20" mode="rect"
+		<view class="swiper-box">
+			<u-swiper @click="onSwiper" bg-color="#C1C0FA" :list="swiperList" name="img" border-radius="20" mode="round"
 				indicator-pos="bottomRight"></u-swiper>
-		</view> -->
+		</view>
 		<!-- 最新 -->
 		<view>
 			<post-list v-if="indexStyle1=='0'" :list="lastPost" :loadStatus="loadStatus" :showTag="true"
@@ -75,7 +75,7 @@
 		<!-- 返回顶部 -->
 		<!-- <lf-back-top></lf-back-top> -->
 		<!-- 入住星球 -->
-		<u-popup v-model="openPop" mode="center" border-radius="28" >
+		<u-popup v-model="openPop" mode="center" border-radius="28" :mask-close-able ='false'>
 			<view class="infobox">
 				<view class="infobox-title">
 					{{topicName}}
@@ -92,6 +92,18 @@
 							我要入驻
 						</view>
 					</view>
+				</view>
+			</view>
+		</u-popup>
+		
+		
+		<u-popup v-model="isShowTips" mode="center" border-radius="14"  :mask-close-able ='false' z-index="9999">
+			<view class="emit-box" @touchmove.stop.prevent="moveHandle">
+				<view class="title">
+					您已被禁用，点击确定后退出!
+				</view>
+				<view>
+					<navigator open-type="exit" target="miniProgram" class="btn">确定</navigator>
 				</view>
 			</view>
 		</u-popup>
@@ -118,7 +130,7 @@
 				sessionUid: uni.getStorageSync('userInfo').uid,
 				loadStatus: 'loadmore',
 				page: 1,
-				shareCover: 'http://pic.linfeng.tech/test/20220724/9a665bf276a44827ad8ef0b3140a7d1d.png',
+				shareCover: 'https://xiaoyuan.pujinetwork.com/bbs/20230823/6ceec0ef8d274331a8f494555cfbfcca.png',
 				topDisList: [],
 				swiperList: [],
 				followUserPost: [],
@@ -150,12 +162,22 @@
 				topicName: '哒哒校园官方',
 				isJoin:null,
 				openPop:false,
-				swiperList:[],
-				isRefresh:false
+				//swiperList:[],
+				isRefresh:false,
+				
 			};
 		},
 		computed: {
-			...mapGetters(['messegeNum','topic'])
+			...mapGetters(['messegeNum','topic','isDisabled']),
+			isShowTips:{
+				get(){
+					return this.$store.state.isDisabled;
+				},
+				set(){
+					
+				}
+				
+			}
 		},
 		onShareAppMessage(res) {
 			return {
@@ -179,21 +201,35 @@
 			if(option.formId){
 				this.$store.commit('SET_FORMID',option.formId)
 				this.$H.post(`point/task/complete/${option.formId}?alreadyNum=1&type=invite_new`).then(res => {
-					console.log('----res',res)
+					console.log('----res111111111111111111111111111',res)
 				})
 				this.$H.get("user/userInfo").then(res => {
 					if(res.code != 0){
-						this.$f.toast('限时任务需要先完成实名认证，请去实名认证')
-						uni.navigateTo({
-							url:`/pages/user/edit-info/edit`
-						})
+						if(getApp().globalData.isRealName==true){
+							this.$f.toast('限时任务需要先完成实名认证，请去实名认证')
+							uni.navigateTo({
+								url:`/pages/user/edit-info/edit`
+							})
+						}
 					}
 				})
 				
 			}
 			
 			this.getSysInfo();
-			this.getLastPost();
+			this.$H.post('post/list', {
+				page: this.page,
+				topicId: uni.getStorageSync('topicId'),
+				// order:order
+			}).then(res => {
+				this.lastPost = res.result.data;
+				console.log(this.lastPost,'=this.lastPostthis.lastPost')
+				if (res.result.current_page >= res.result.total || res.result.last_page === 0) {
+					this.loadStatus = 'nomore';
+				} else {
+					this.loadStatus = 'loadmore';
+				}
+			});
 			this.getAdConfig();
 			this.getLinkList();
 			// this.getClassList();
@@ -206,11 +242,39 @@
 			
 			if (uni.getStorageSync('topicId')) {
 				this.toppicDetail(uni.getStorageSync('topicId'))
-				this.lastPost=[];
-				this.page=1;
-				this.getLastPost();
+				// this.lastPost=[];
+				this.page = 1;
+				// this.getLastPost();
+				this.$H.post('post/list', {
+					page: this.page,
+					topicId: uni.getStorageSync('topicId'),
+					// order:order
+				}).then(res => {
+					this.lastPost = res.result.data;
+					console.log(this.lastPost,'=this.lastPostthis.lastPost')
+					if (res.result.current_page >= res.result.total || res.result.last_page === 0) {
+						this.loadStatus = 'nomore';
+					} else {
+						this.loadStatus = 'loadmore';
+					}
+				});
 				// 刷新数据
+			}else{
+				this.$H.post('post/list', {
+					page: this.page,
+					topicId: uni.getStorageSync('topicId'),
+					// order:order
+				}).then(res => {
+					this.lastPost = res.result.data;
+					console.log(this.lastPost,'=this.lastPostthis.lastPost')
+					if (res.result.current_page >= res.result.total || res.result.last_page === 0) {
+						this.loadStatus = 'nomore';
+					} else {
+						this.loadStatus = 'loadmore';
+					}
+				});
 			}
+			
 			
 			// 获取当前会员的母星
 			// this.$H.get('topic/getParent/' + this.uid).then(res => {
@@ -245,6 +309,7 @@
 			uni.stopPullDownRefresh();
 		},
 		methods: {
+			moveHandle(){},
 			// 跳转搜索
 			getSearch(){
 				uni.navigateTo({
@@ -262,43 +327,45 @@
 			},
 			// 处理点击轮播图跳转
 			onSwiper(index) {
-				let link = this.swiperList[index];
-				console.log(link,'link====')
+				let idBanner = this.swiperList[index].id;
+				uni.navigateTo({
+					url: '/pages/index/advDetail?id=' + idBanner 
+				});
+				console.log(index,this.swiperList,'link====')
 				//跳转页面
-				if (link.type == 1) {
-					// #ifdef MP-WEIXIN
-					uni.navigateTo({
-						url: '/pages/webview/webview?src=' + link.url
-					});
-					// #endif
+			// 	if (link.type == 1) {
+			// 		// #ifdef MP-WEIXIN
+			// 		uni.navigateTo({
+			// 			url: '/pages/webview/webview?src=' + link.url
+			// 		});
+			// 		// #endif
 			
-					// #ifdef H5
-					window.open(link.url)
-					// #endif
-					// #ifdef APP-PLUS
-					plus.runtime.openURL(link.url)
-					// #endif
-				}
-				//跳转其他小程序
-				if (link.type == 2) {
-					uni.navigateToMiniProgram({
-						appId: link.appid,
-						path: link.url
-					})
-				}
-			
-				//跳转小程序页面
-				if (link.type == 3) {
-					if (link.url == '/pages/index/index' || link.url == '/pages/square/square' || link.url == '/pages/my/my') {
-						uni.switchTab({
-							url: link.url
-						})
-					} else {
-						uni.navigateTo({
-							url: link.url
-						})
-					}
-				}
+			// 		// #ifdef H5
+			// 		window.open(link.url)
+			// 		// #endif
+			// 		// #ifdef APP-PLUS
+			// 		plus.runtime.openURL(link.url)
+			// 		// #endif
+			// 	}
+			// 	//跳转其他小程序
+			// 	if (link.type == 2) {
+			// 		uni.navigateToMiniProgram({
+			// 			appId: link.appid,
+			// 			path: link.url
+			// 		})
+			// 	}
+			// 	//跳转小程序页面
+			// 	if (link.type == 3) {
+			// 		if (link.url == '/pages/index/index' || link.url == '/pages/square/square' || link.url == '/pages/my/my') {
+			// 			uni.switchTab({
+			// 				url: link.url
+			// 			})
+			// 		} else {
+			// 			uni.navigateTo({
+			// 				url: link.url
+			// 			})
+			// 		}
+			// 	}
 			
 			},
 			getDiscuss(){
@@ -385,7 +452,7 @@
 			},
 
 
-			tabChange(index ) {
+			tabChange(index) {
 				console.log('index:',index)
 				this.current = index;
 				this.followUserPost = [];
@@ -436,9 +503,7 @@
 				this.loadStatus = 'loading';
 				console.log(index,this.tabList,'this.tabList======')
 				let id = this.classList[index].id;
-				// let dicId=this.classList[index].dicId
 				let topId = this.classList[index].topicId;
-				// post/list   postCategory/info/{id}
 				this.$H.post('post/list', {
 					page: this.page,
 					disId:id,
@@ -447,7 +512,7 @@
 					
 				}).then(res => {
 					this.lastPost = this.lastPost.concat(res.result.data);
-					console.log(res,'=this.lastPostthis.lastPost')
+					console.log(this.lastPost,'=this.lastPostthis.lastPost')
 					if (res.result.current_page >= res.result.total || res.result.last_page === 0) {
 						this.loadStatus = 'nomore';
 					} else {
@@ -459,11 +524,10 @@
 			getLastPost() {
 				this.loadStatus = 'loading';
 				let order = 'id desc';
-				// post/lastPost
 				this.$H.post('post/list', {
 					page: this.page,
 					topicId: uni.getStorageSync('topicId'),
-					order:order
+					// order:order
 				}).then(res => {
 					this.lastPost = this.lastPost.concat(res.result.data);
 					console.log(this.lastPost,'刷新this.lastPost====')
@@ -507,6 +571,22 @@
 	}
 </style>
 <style lang="scss" scoped>
+	.emit-box{
+		width: 580rpx;
+		padding:50rpx 42rpx;
+		text-align: center;
+		.title{
+			font-size: 16px;
+			font-weight: bolder;
+		}
+		.btn{
+			margin-top: 40rpx;
+			background-color: $btn-base;
+			color: #fff;
+			border-radius: 8px;
+			padding: 10rpx 0;
+		}
+	}
 	.index-con {
 		padding-bottom: 80rpx;
 	    background:  $bg-color-base;
@@ -559,7 +639,7 @@
 	}
 
 	.lf-tab-con {
-		width: 98%;
+		width: 100%;
 	}
 
 	.lf-vip {

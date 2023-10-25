@@ -136,20 +136,21 @@
 		},
 		onLoad() {
 			//重新获取连接websocket
-			if (!$store.state.isSocketOpen && uni.getStorageSync('hasLogin')) {
-				websocket.initConnect()
-			}
+			// if (!$store.state.isSocketOpen && uni.getStorageSync('hasLogin')) {
+			// 	websocket.initConnect()
+			// }
 		},
 		onShow() {
 			if (uni.getStorageSync('userInfo').uid) {
 				this.getMsgNum();
 			}
 			//重新获取连接websocket
-			if (!$store.state.isSocketOpen && uni.getStorageSync('hasLogin')) {
+			console.log($store.state.isSocketOpen,uni.getStorageSync('hasLogin'),'$store.state.isSocketOpen====',)
+			// if (!$store.state.isSocketOpen && uni.getStorageSync('hasLogin')) {
 				websocket.initConnect()
 				$store.dispatch('getFriendList')
 				$store.dispatch('getNoticeList')
-			}
+			// }
 		},
 		onPullDownRefresh() {
 			this.getMsgNum();

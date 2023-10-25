@@ -279,9 +279,9 @@
 				}).then(res => {
 					this.postList = this.postList.concat(res.result.data);
 					console.log(this.postList,res.result.data,'this.postList===')
-					let arrList=this.postList[0].userInfo.userImages?JSON.parse(this.postList[0].userInfo.userImages):[];
-					this.ImagesList=arrList;
-					console.log(this.ImagesList,'====')
+					// let arrList=this.postList[0].userInfo.userImages?JSON.parse(this.postList[0].userInfo.userImages):[];
+					// this.ImagesList=arrList;
+					// console.log(this.ImagesList,'====')
 					if (res.result.current_page >= res.result.total || res.result.last_page === 0) {
 						this.loadStatus = "nomore";
 					} else {
@@ -304,6 +304,10 @@
 				this.$H.post('user/userInfoById', {
 					uid: this.uid
 				}).then(res => {
+					console.log(res,'====res')
+					let arrList = JSON.parse(res.result.userImages)
+					this.ImagesList = arrList;
+					console.log(this.ImagesList,'====')
 					let strInfo = res.result.tagStr.join('/');
 					this.userInfo = res.result;
 					this.userInfo.strInfo = strInfo;

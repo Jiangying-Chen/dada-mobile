@@ -215,6 +215,7 @@
 				});
 				// #endif
 				// #ifdef MP-WEIXIN
+				 this.$store.commit('SET_ISJUMP',false)
 				uni.navigateTo({
 					url: '/pages/user/login'
 				});

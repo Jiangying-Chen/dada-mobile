@@ -99,7 +99,7 @@
 		</scroll-view>
          
 		 <!-- 矿石兑换和采集 -->
-		<u-popup v-model="isShowTs" mode="center" border-radius="18">
+		<u-popup v-model="isShowTs" mode="center" border-radius="18" :mask-close-able ='false'>
 			<view class="infobox">
 				<view class="infobox-title">
 					矿石{{title}}
@@ -154,7 +154,7 @@
 		</u-popup>
 		
 		<!-- 采集满提示 -->
-		<u-popup v-model="isShowTsOne" mode="center" border-radius="18">
+		<u-popup v-model="isShowTsOne" mode="center" border-radius="18" :mask-close-able ='false'>
 			<view class="infobox">
 				<view class="infobox-title">
 					 提示
@@ -245,8 +245,9 @@
 				_this.getMineralsList();
 				$store.dispatch('getFriendList');
 				_this.getNumber();
-				console.log(this.friendList)
+				console.log(this.friendList,'=======')
 			}else{
+				 this.$store.commit('SET_ISJUMP',false)
 				uni.navigateTo({
 					url:'/pages/user/login'
 				})

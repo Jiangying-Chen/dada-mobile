@@ -42,8 +42,16 @@ const store = new Vuex.Store({
 		changeComplete:false,
 		askComplete:false,
 		formId:'-1',
+		isJump:true,
+		isDisabled:false,
 	},
 	mutations: {
+		SET_ISDISABLED(state,isDisabled){
+			state.isDisabled = isDisabled
+		},
+		SET_ISJUMP(state,isJump){
+			state.isJump = isJump;
+		},
 		login(state, userInfo) {
 			state.hasLogin = uni.getStorageSync("hasLogin");
 			state.sessionKey = uni.getStorageSync("sessionKey");

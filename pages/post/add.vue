@@ -26,18 +26,18 @@
 						内容
 					</view>
 					<view class="num">
-						{{form.content.length}}/400
+						{{form.content.length}}/800
 					</view>
 				</view>
 				<view class="content">
-					<textarea placeholder="说些什么叭..." class="txt1 input-text1 post-txt1" maxlength="1000" :auto-height="true"
+					<textarea placeholder="说些什么叭..." class="txt1 input-text1 post-txt1" maxlength="800" :auto-height="true"
 						v-model="form.content" placeholder-style="font-size:14px"></textarea>
 				</view>
 				<!-- <u-line length="690rpx" color="#F6F6F6" margin="20rpx 0 32rpx 0"></u-line> -->
 			</view>
 			<!-- 上传图片 -->
 			<view v-if="form.type == 1" style="transform: translateX(-10rpx);margin: 20px 0;">
-				<u-upload ref="uUpload" :size-type="['original']" name="Image" :max-count="9" :header="header"
+				<u-upload ref="uUpload" :size-type="['compressed']" name="Image" :max-count="9" :header="header"
 					:action="uploadImgUrl" @on-uploaded="submit" :auto-upload="false" :custom-btn="true">
 					<view slot="addBtn" class="slot-btn">
 						<u-icon name="plus" size="40" color="#6f6f6f"></u-icon>
@@ -98,6 +98,7 @@
 				<u-icon class="u-icon" name="arrow-right"></u-icon>
 			</view>
 			
+			<RealName v-model="isOpenRealName"></RealName>
 			
 			<!-- 帖子类型 -->
 			<!-- <view class="choose-item">
@@ -155,6 +156,7 @@
 </template>
 
 <script>
+import RealName from '@/components/RealName/RealName.vue'
 import hTips from '@/components/h-tips/h-tips.vue'
 import topNave from '@/components/nav-header/index.vue';
 export default {
@@ -204,12 +206,19 @@ export default {
 		  avatar:'',
 		  username:'',
 		  friendStr:'',
+		  isOpenRealName:false,
 		  
 		};
 	},
 	components: {
-		hTips,topNave
+		hTips,topNave,RealName
 	},
+	computed:{
+		userInfo(){
+			return this.$store.state.loginUserInfo
+		},
+	},
+	
 	onShow() {
 		if(uni.getStorageSync('callFriendList')){
 			this.callList = JSON.parse(uni.getStorageSync('callFriendList'));
@@ -232,15 +241,15 @@ export default {
 		this.statusBarHeight = getApp().globalData.statusBarHeight + getApp().globalData.navigationBarHeight;
 		this.form.type = options.type;
 		
-		if(uni.getStorageSync('userInfo').uid){
-			this.uid = uni.getStorageSync('userInfo').uid;
-			this.avatar= uni.getStorageSync('userInfo').avatar;
-			this.username= uni.getStorageSync('userInfo').username;
-		}else{
-			uni.navigateTo({
-				url:'/pages/user/login'
-			})
-		}
+		// if(uni.getStorageSync('userInfo') && uni.getStorageSync('userInfo').uid){
+		// 	this.uid = uni.getStorageSync('userInfo').uid;
+		// 	this.avatar= uni.getStorageSync('userInfo').avatar;
+		// 	this.username= uni.getStorageSync('userInfo').username;
+		// }else{
+		// 	uni.navigateTo({
+		// 		url:'/pages/user/login'
+		// 	})
+		// }
         try {
         	uni.removeStorageSync('callFriendList');
         } catch (e) {
@@ -477,9 +486,9 @@ export default {
 		//发送信息
 		sendMessage(friend_id,postId){
 			let m = {
-				senderId: this.uid,
-				senderName: this.username,
-				senderAvatar: this.avatar,
+				senderId: this.userInfo.uid,
+				senderName: this.userInfo.username,
+				senderAvatar: this.userInfo.avatar,
 				receiverId: friend_id,
 				notation: '',
 				applyMessage: '',

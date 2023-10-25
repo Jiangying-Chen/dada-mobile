@@ -108,20 +108,6 @@
 			this.geTop()
 		},
 		methods: {
-			// getUserJoinTopic() {
-			// 	let _this=this;
-			// 	_this.$H.post('topic/userJoinTopic',{
-			// 			page:_this.pages,
-			// 		})
-			// 		.then(res => {
-			// 			_this.joinTopicList = _this.joinTopicList.concat(res.result.data);
-			// 			_this.isLoadMore = (_this.pages == res.result.total);
-			// 			if (!_this.isLoadMore) {
-			// 				_this.pages++;
-			// 			}
-			// 			uni.stopPullDownRefresh();
-			// 		});
-			// },
 			// 获取当前加入的星球
 			getUserJoinTopic() {
 				this.$H.post('topic/userJoinTopic',{
@@ -133,19 +119,19 @@
 					});
 			},
 			changeTop(row){
-				//if(this.globalData.onLineObj && this.globalData.onLineObj.taskStatus!='COMPLETED'){
 				if(this.changeComplete==false){
 					this.$store.commit('SET_TOPIC',row.id)
 					this.$H.post(`point/task/complete/-1?alreadyNum=1&type=change_topic`).then(res => {
 						this.$store.commit('SET_CHANGECOMPLETE',true)
+						if(res.code === 500) {
+							uni.hideToast()
+						}
 					})
 				}
 				uni.setStorageSync('topicId', row.id);
-				uni.switchTab({
+				uni.reLaunch({
 						url: '/pages/index/index'
-					})
-				// uni.navigateBack({})
-				
+					})	
 			},
 			toppicDetail(id) {
 				this.$H.get('topic/detail', {

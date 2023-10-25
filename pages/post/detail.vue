@@ -1,14 +1,14 @@
 <template>
 	<view>
-		<top-nave :bar-height="statusBarHeight" :nav-height="navigationBarHeight" title="详情" :isback="true"></top-nave>
+		<top-nave :custom-back='backto' :bar-height="statusBarHeight" :nav-height="navigationBarHeight" title="详情" :isback="true"></top-nave>
 		<view class="info-box">
 			
 			<view :class="'user-item-'+showType">
-				<image @click="jumpUser(postDetail.uid)" :src="postDetail.userInfo.avatar"></image>
+				<image @click="jumpUser(postDetail.uid)" :src="postDetail.userInfo.avatar" :lazy-load="true"></image>
 				<view class="user-item-user">
 					<view class="diyTag">
 						<text class="user-name">{{ postDetail.userInfo.username }}</text>
-						<image src="../../static/vip/vipIcon.png" class="image3" v-if="postDetail.userInfo.vip==1" />
+						<image src="../../static/vip/vipIcon.png" class="image3" v-if="postDetail.userInfo.vip==1" :lazy-load="true"/>
 					</view>
 					<view class="postIntro">
 						<text>{{ postDetail.createTime | timeFormat }}</text>
@@ -24,8 +24,9 @@
 			</view>
 			
 			<view class="post-title" style="font-weight: bold;">{{ postDetail.title }}</view>
-			<!-- <u-parse :html="postDetail.content" @longpress="onCopy"></u-parse> -->
-			<rich-text class="post-text" @longpress="onCopy" :nodes="postDetail.content |formatRich"></rich-text>
+			<!-- <u-parse :html="formatRich(postDetail.content)" @longpress="onCopy"></u-parse> -->
+			<rich-text class="post-text" @longpress="onCopy" :nodes="formatRich(postDetail.content)"></rich-text>
+			<!-- <u-parse class="post-text" @longpress="onCopy" :html="postDetail.content || formatRich(postDetail.content)"></u-parse> -->
 			
 			<view v-if="showType=='1'&&postDetail.media&&postDetail.media.length>0&&postDetail.type == 1">
 				<u-swiper
@@ -44,14 +45,14 @@
 				<!--一张图片-->
 				<block v-if="postDetail.media.length == 1">
 					<image class="img-style-1" @tap.stop="previewImage" mode="aspectFill"
-						:data-current="postDetail.media[0]" :data-image="postDetail.media" :src="postDetail.media[0]">
+						:data-current="postDetail.media[0]" :data-image="postDetail.media" :src="postDetail.media[0]" :lazy-load="true">
 					</image>
 				</block>
 				<!--二张图片-->
 				<block v-else-if="postDetail.media.length == 2">
 					<view class="img-style-2">
 						<image v-for="(mediaItem, index2) in postDetail.media" :key="index2" @tap.stop="previewImage"
-							mode="aspectFill" :data-current="mediaItem" :data-image="postDetail.media" :src="mediaItem">
+							mode="aspectFill" :data-current="mediaItem" :data-image="postDetail.media" :src="mediaItem" :lazy-load="true">
 						</image>
 					</view>
 				</block>
@@ -59,7 +60,7 @@
 				<block v-else-if="postDetail.media.length == 4">
 					<view class="img-style-4">
 						<image v-for="(mediaItem, index2) in postDetail.media" :key="index2" @tap.stop="previewImage"
-							mode="aspectFill" :data-current="mediaItem" :data-image="postDetail.media" :src="mediaItem">
+							mode="aspectFill" :data-current="mediaItem" :data-image="postDetail.media" :src="mediaItem" :lazy-load="true">
 						</image>
 					</view>
 				</block>
@@ -94,12 +95,6 @@
 			</view>
 			
 			<!-- 话题 -->
-			<!-- <view class="detail-tag" v-if="postDetail.discussId > 0 && postDetail.type == 1">
-				<view @click="toDiscuss(postDetail.discussId)">
-					<image mode="aspectFill" src="/static/images/topic.png"></image>
-					<view>{{postDetail.discussName}}</view>
-				</view>
-			</view> -->
 			<!-- 地址信息 -->
 			<view v-if="postDetail.address" @click="openLocation" class="post-address">
 				<view>
@@ -108,19 +103,7 @@
 				</view>
 			</view>
 			<!-- 圈子信息 -->
-			<!-- <navigator class="topic-info" :url="'/pages/topic/detail?id=' + postDetail.topicId">
-				<image mode="aspectFill" class="cover" :src="postDetail.topicInfo.coverImage"></image>
-				<view class="center">
-					<view class="desc">{{ postDetail.topicInfo.topicName.substring(0, 12) }}</view>
-					<view class="count-txt">{{ postDetail.topicInfo.userCount | numberFormat}}位成员 /
-						{{ postDetail.topicInfo.postCount | numberFormat }}篇作品
-					</view>
-				</view>
-				<view class="right">
-					<text>去看看</text>
-					<u-icon name="arrow-right-double"></u-icon>
-				</view>
-			</navigator> -->
+
 			<!--点赞、分享、评论-->
 			<view class="p-footer">
 				<block v-if="postDetail.isCollection">
@@ -131,6 +114,7 @@
 				</block>
 				<block v-else>
 					<view class="p-item" @click="addCollection">
+						<u-icon name="thumb-up" size="40" color="#0F0158"></u-icon>
 						<text style="margin-left: 10rpx;">{{ postDetail.collectionCount }}</text>
 					</view>
 				</block>
@@ -151,12 +135,12 @@
 			<view class="title" >全部评论</view>
 			<view style="margin-bottom: 40rpx;" v-for="(item, index) in commentList" :key="index">
 				<view class="comment-item" @longpress="delComment(item, index)">
-					<image @click="jumpUser(item.userInfo.uid)" class="avatar" :src="item.userInfo.avatar"></image>
+					<image @click="jumpUser(item.userInfo.uid)" class="avatar" :src="item.userInfo.avatar" :lazy-load="true"></image>
 					<view class="c-content" @click="onReply(item)">
 						<view class="user">
 							<!-- <text v-if="item.userInfo.uid == postDetail.userInfo.uid" class="official">楼主</text> -->
 							<text >{{ item.userInfo.username }}</text>
-							<image v-if="item.userInfo.vip==1" src="../../static/vip/vipIcon.png"
+							<image v-if="item.userInfo.vip==1" src="../../static/vip/vipIcon.png" :lazy-load="true"
 								style="width: 45rpx;height: 45rpx;margin-left: 7rpx;" />
 							<block v-if="item.isThumbs">
 								<view @click.stop="cancelThumbs(item.id, index)" class="thumbs">
@@ -184,7 +168,7 @@
 							<!-- <text v-if="item2.userInfo.uid == postDetail.userInfo.uid" class="official">楼主</text> -->
 							<text >{{ item2.userInfo.username }}</text>
 							<image v-if="item2.userInfo.vip==1" src="../../static/vip/vipIcon.png"
-								style="width: 45rpx;height: 45rpx;margin-left: 7rpx;" />
+								style="width: 45rpx;height: 45rpx;margin-left: 7rpx;" :lazy-load="true"/>
 							<block v-if="item2.isThumbs">
 								<view class="thumbs" @click.stop="cancelThumbs(item2.id, index, index2)">
 									<text class="num">{{ item2.thumbs }}</text>
@@ -220,24 +204,14 @@
 			</block>
 		</view>
 		<view style="height: 100rpx;"></view>
-		<!-- 评论输入框 -->
-		<!-- <view class="comment-tool">
-			<textarea :placeholder="placeholder" @blur="onBlur" :focus="focus" fixed="true" cursor-spacing="10"
-				v-model="form.content" auto-height="true" placeholder-class="txt-placeholder" confirm-type="send"
-				@confirm="addComment"></textarea>
-			<u-button @click="addComment" :disabled="isSubmitD" :custom-style="btnStyle" style="border-radius: 0;">发布
-			</u-button>
-		</view> -->
+
 		<view class="comment-tool">
 			<view style="height: 60rpx;">
 				<input type="text" :placeholder="placeholder"
 					style="height: 60rpx;font-size: 28rpx;font-weight: 500;line-height: 60rpx;width: 500rpx;margin-right: 20rpx;"
 					@blur="onBlur"  v-model="form.content" confirm-type="send" @confirm="addComment">
-				<!-- <textarea :placeholder="placeholder" @blur="onBlur" :focus="focus" fixed="true" cursor-spacing="10"
-					  	v-model="form.content" auto-height="true" placeholder-class="txt-placeholder" confirm-type="send"
-					  	@confirm="addComment"></textarea> -->
 			</view>
-			<u-button  @click="addComment" :disabled="isSubmitD" :custom-style="btnStyle">发送
+			<u-button  @click="addCommentBefore" :disabled="isSubmitD" :custom-style="btnStyle">发送
 			</u-button>
 		</view>
 		<!-- 分享选择弹窗 -->
@@ -245,43 +219,46 @@
 			<view class="share-wrap" @click="closeShare">
 				<!-- #ifdef MP-WEIXIN -->
 				<button open-type="share" class="share-item u-reset-button">
-					<image src="/static/wechat.png"></image>
+					<image src="/static/wechat.png" :lazy-load="true"></image>
 					<text>微信好友</text>
 				</button>
 				<!-- #endif -->
 				<!-- #ifdef H5 -->
 				<view class="share-item2" @click="copyPageUrl">
-					<image src="/static/images/share.png"></image>
+					<image src="/static/images/share.png" :lazy-load="true"></image>
 					<text>分享链接</text>
 				</view>
 				<!-- #endif -->
 				<!-- #ifdef H5 || MP-WEIXIN -->
 				<view class="share-item" @click="shareCanvas">
-					<image src="/static/images/share2.png"></image>
+					<image src="/static/images/share2.png" :lazy-load="true"></image>
 					<text>分享海报</text>
 				</view>
 				<!-- #endif -->
 			</view>
 		</lf-popup>
 		<!-- 分享海报弹窗-->
-		<u-popup v-model="showCanvas" mode="center" width="80%">
+		<u-popup v-model="showCanvas" mode="center" width="80%" >
 			<view class="share-box">
-				<image :src="posterUrl" class="images"></image> 
+				<image :src="posterUrl" class="images" :lazy-load="true"></image> 
 			</view>
 			<view class="footer">
 				<u-button :custom-style="shareBtnStyle" @click="saveImg" type="success" shape="circle">保存分享</u-button>
 			</view>
 		</u-popup>
+		<RealName v-model="isOpenRealName"></RealName>
 	</view>
 </template>
 
 <script>
+	import RealName from '@/components/RealName/RealName.vue'
 	import linfengAd from "@/components/linfeng-ad/linfeng-ad.vue";
-	import topNave from '@/components/nav-header/index.vue';
+	import topNave from '@/components/nav-header/detailNav.vue';
 	export default {
 		components:{
 			linfengAd,
-			topNave
+			topNave,
+			RealName
 		},
 		data() {
 			return {
@@ -338,14 +315,23 @@
 				adIsOpen:'',
 				showType:'0',
 				statusBarHeight: 0,
-				navigationBarHeight:0
+				navigationBarHeight:0,
+			//	userInfo:{},
+				message:'',
+				isOpenRealName:false,
 			};
 		},
 		filters: {
 			// -webkit-line-clamp: 4;
-			formatRich(val){
-				return "<div style='overflow : hidden;text-overflow: ellipsis;display: -webkit-box; -webkit-box-orient: vertical;word-break: break-all;'>" + val + "</div>"
-				}
+			// formatRich(val){
+			// 	console.log("this.postDetail.content",this.postDetail.content)
+			// 	return "<div style='overflow : hidden;text-overflow: ellipsis;display: -webkit-box; -webkit-box-orient: vertical;word-break: break-all;'>" + `${val}` + "</div>"
+			// 	}
+		},
+		computed:{
+			userInfo(){
+				return this.$store.state.loginUserInfo
+			},
 		},
 		onLoad(options) {
 			this.postId = options.id;
@@ -362,10 +348,17 @@
 			this.getPostDetail();
 			this.getCommentList();
 			this.getAdConfig();
-			let userInfo = uni.getStorageSync('userInfo');
-			if (userInfo) {
-				this.isVip = uni.getStorageSync('userInfo').vip
-			}
+			
+			// let userInfo = uni.getStorageSync('userInfo');
+			// if(userInfo &&userInfo.uid){
+			// 	this.isVip = uni.getStorageSync('userInfo').vip
+			// 	this.userInfo = uni.getStorageSync('userInfo');
+			// }else{
+			// 	uni.navigateTo({
+			// 		url:'/pages/user/login'
+			// 	})
+			// }
+			
 			//#ifdef MP-WEIXIN
 			wx.showShareMenu({
 				withShareTicket: true,
@@ -403,6 +396,16 @@
 			};
 		},
 		methods: {
+			formatRich(val){
+			return val ? val.replace(/[<">']/g, (a) => {
+			            return {
+			               '<': '&lt;',
+			               '"': '&quot;',
+			               '>': '&gt;',
+			               "'": '&#39;'
+			          }[a]
+			       }) : '';
+							},
 			//获取广告配置
 			getAdConfig() {
 				this.$H.get('system/getAd').then(res => {
@@ -484,7 +487,8 @@
 			// 长按 删除评论
 			delComment(e, index, index2) {
 				let that = this;
-				let user = uni.getStorageSync('userInfo');
+				//let user = uni.getStorageSync('userInfo');
+				let user = {...this.userInfo}
 				//如果是子评论需要遍历子评论查询是否存在自己回复的评论消息
 				var flag = false; //这个用来确定父评论下是否存在用户自己的子评论
 				var i = 0; //这个用来锁定子评论楼层位置
@@ -725,6 +729,37 @@
 					url: '/pages/user/home?uid=' + uid
 				});
 			},
+			addCommentBefore(){
+				if(this.userInfo && this.userInfo.uid){
+				   if(this.userInfo.type==1){
+					   this.addComment()
+				   }else{
+					   //未实名
+					   let isRN = getApp().globalData.isRealName;
+					   if(isRN==1){
+						   if(this.userInfo.identity==null || this.userInfo.identity==''){
+							   console.log('未实名')
+							   this.isOpenRealName = true;
+						   }else{
+							   this.addComment()
+						   }
+					   }else{
+						   this.addComment()
+					   }
+				   }			   
+				}else{
+					this.$u.toast('未登录，暂不支持回帖');
+					this.$store.commit('SET_ISJUMP',false)
+					setTimeout(()=>{
+					   uni.navigateTo({
+						  url:'/pages/user/login'
+					   })
+					},500)
+					return
+				}
+				
+			},
+			
 			addComment() {
 				this.isSubmitD = true;
 				if (this.form.content == '') {
@@ -732,7 +767,8 @@
 					this.isSubmitD = false;
 					return;
 				}
-
+				
+                this.message = this.form.content;
 				uni.showLoading({
 					mask: true,
 					title: '发布中'
@@ -746,11 +782,86 @@
 						this.form.pid = 0;
 						this.getCommentList();
 						this.postDetail.commentCount++;
+						this.sendMessage('reply-post')
+					}else{
+						this.$u.toast(res.msg);
 					}
 					this.isSubmitD = false;
 					uni.hideLoading();
 				});
 			},
+			//发送信息
+			sendMessage(type){
+				let m = {
+					senderId: this.userInfo.uid,
+					senderName: this.userInfo.username,
+					senderAvatar: this.userInfo.avatar,
+					receiverId: this.postDetail.uid, //接收者
+					notation: '',
+					applyMessage: this.message,
+					postId:this.postId,
+				}
+				let msg = {
+					type: type,
+					data: m
+				}
+				let that = this
+				uni.sendSocketMessage({
+					data: JSON.stringify(msg),
+					success() {
+						uni.showToast({
+							icon: 'success',
+							title: '发送成功'
+						})
+					},
+					fail(res) {
+						uni.showToast({
+							icon: 'none',
+							title: '发送失败,请重试11'
+						})
+						websocket.initConnect()
+						setTimeout(function() {
+						    that.retrySubmit(type);
+						}, 1200);
+					}
+				})
+			},
+			//尝试重连
+			retrySubmit(){
+				let m = {
+					senderId: this.userInfo.uid,
+					senderName: this.userInfo.username,
+					senderAvatar: this.userInfo.avatar,
+					receiverId: this.postDetail.uid, //接收者
+					notation: '',
+					applyMessage: this.message,
+					postId:this.postId,
+				}
+				let msg = {
+					type: type,
+					data: m
+				}
+				let that = this
+				uni.sendSocketMessage({
+					data: JSON.stringify(msg),
+					success() {
+						uni.showToast({
+							icon: 'success',
+							title: '发送成功'
+						})
+					},
+					fail(res) {
+						uni.showToast({
+							icon: 'none',
+							title: '发送失败,请重试222'
+						})
+						websocket.initConnect()
+					}
+				})
+			},
+			
+			
+			
 			getPostDetail() {
 				uni.showLoading({
 					mask: true,
@@ -771,6 +882,7 @@
 							}, 1500);
 						} else {
 							this.postDetail = res.result;
+							console.log("this.postDetail",this.postDetail)
 							if(res.result.showType){
 								this.showType = res.result.showType;
 							}
@@ -819,6 +931,8 @@
 						if (res.code === 0) {
 							this.postDetail.isCollection = true;
 							this.postDetail.collectionCount++;
+							
+							this.sendMessage('like-dot')
 						}
 					});
 			},

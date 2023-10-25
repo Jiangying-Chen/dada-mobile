@@ -73,21 +73,23 @@
 				</scroll-view>
 			</view> -->
 			
-			<!-- <view class="uni-flex uni-row infoview" style="flex-direction: column; justify-content: space-between;" >
+			<view class="uni-flex uni-row infoview" style="flex-direction: column; justify-content: space-between;" >
 				<view class="uni-flex uni-row" style="width: 100%; justify-content: space-between;align-items: center;">
 					<view class="" style="line-height: 36px;width: 65px;">照片集</view>
 					<view >
-						已选{{fileList.length>0?fileList.length:0}}张<u-icon name="arrow-right" color="#0F0158"></u-icon>
+						已选{{keepphotoList.length>0?keepphotoList.length:0}}张<u-icon name="arrow-right" color="#0F0158"></u-icon>
 					</view>
 				</view>
 				
 				<view class="" style="display: flex;width: 100%;">
 					<u-upload ref="uUpload" :file-list="fileList" :action="uploadImgUrl" 
+					@on-success='upLoadImg'
+					@on-choose-complete = 'imgchange'
 						:to-json="true" :size-type="['compressed']"   @on-remove="handleRemove" 
 						name="Image"   max-count="9" :header="header"  width="135" height="135"  @on-uploaded="submitTupian"
 					></u-upload>
 				</view>
-			</view> -->
+			</view>
 		
 			<!-- <view class="saveBtn" @click="submit"> 
 				保存
@@ -112,7 +114,14 @@
 				</form>
 			</view>
 		</u-popup>
-		
+		<template>
+			<u-mask :show="showloading">
+				<view class="wrap">
+					<u-loading :show="showloading"></u-loading>
+					<text>图片上传中</text>
+					</view>
+			</u-mask>
+		</template>
 	</view>
 </template>
 
@@ -125,6 +134,8 @@
 		},
 		data() {
 			return {
+				keepphotoList:[],
+				showloading:false,
 				uploadImgUrl: this.$c.domain + 'common/upload',
 				header: {
 					token: uni.getStorageSync('token')
@@ -184,29 +195,33 @@
 				
 		},
 		methods: {
+			upLoadImg(data){
+				this.keepphotoList.push({url:data.result})
+			    this.updateUserInfoImage()
+			},
+			//图片上传触发
+			imgchange(list){
+				this.showloading = true
+			},
 			//移除照片
 			handleRemove(file){
-				console.log('---file',file)
-				this.fileList.splice(file,1)
-				console.log('this.fileList',this.fileList)
-				this.updateUserInfoImage();
+				this.keepphotoList.splice(file,1)
+				this.updateUserInfoImage()
+				
 			},
 		   //所有图片上传完毕触发
 			submitTupian(e) {
-				console.log('上传完成 e====',e)
 				this.fileList = e.map(v=>({url:v.url}));
-				this.updateUserInfoImage();
+				this.showloading = false
+				this.$f.toast('修改成功')
 			},
 			//修改用户信息的相册接口
 			updateUserInfoImage(){
-				let userImagesList = JSON.stringify(this.fileList);
-				console.log(userImagesList,'====this.lists===')
+				let userImagesList = JSON.stringify(this.keepphotoList);
 				this.$H.post('user/userInfoEdit', {
 					userImages:userImagesList
 				}).then(res => {
 					if (res.code == 0) {
-						this.getUserInfo();
-						this.$f.toast('修改成功')
 					}
 				});
 			},
@@ -308,11 +323,17 @@
 				})
 			},
 			getUserInfo() {
+				//用户信息接口
 				this.$H.get("user/userInfo").then(res => {
 					this.userInfo = res.result;
-					let arrList=this.userInfo.userImages?JSON.parse(this.userInfo.userImages):[];
-					this.fileList=arrList.map(v=>({url:v.url}));
-					console.log('用户信息 this.userInfo',this.userInfo)
+					this.userInfo.userImages = res.result.userImages
+					this.keepphotoList = res.result.userImages
+					//转换格式
+					let arrList = this.userInfo.userImages?JSON.parse(this.userInfo.userImages):[];
+					//上传列表
+					this.keepphotoList = arrList.map(item=>({url:item.url}))
+					//图片列表
+					this.fileList = arrList.map(item=>({url:item.url}))
 					if (res.result.gender === 1) {
 						this.userInfo.gender = '男'
 					} else if (res.result.gender === 2) {
@@ -323,7 +344,6 @@
 					this.getCurrentParent();
 					$store.state.loginUserInfo = this.userInfo
 					uni.setStorageSync("userInfo", this.userInfo)
-
 				})
 			},
 			jump(value, type) {
@@ -413,6 +433,15 @@
 	}
 </script>
 <style scoped lang="scss">
+	.wrap {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		color: white;
+	}
 	.identity{
 		width: 100rpx;
 		height: 44rpx;

@@ -1,6 +1,6 @@
 {
     "name" : "噗叽校园生活",
-    "appid" : "__UNI__DBF2040",
+    "appid" : "__UNI__A75C440",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -100,11 +100,13 @@
     },
     "quickapp" : {},
     "mp-weixin" : {
-        "appid" : "wx8ec7934b5f8fdf0d",
+        "appid" : "wx7c84ede33062d1e4",
         "setting" : {
             "urlCheck" : true,
             "minified" : true,
-            "es6" : true
+            "es6" : true,
+            "ignoreDevUnusedFiles" : false,
+            "ignoreUploadUnusedFiles" : false
         },
         "usingComponents" : true,
         "permission" : {

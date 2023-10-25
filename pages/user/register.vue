@@ -139,9 +139,10 @@
 						});
 						this.getUserInfo();
 					}
-
+                    // this.onShow()
 					uni.hideLoading();
 				})
+				this.onShow()
 			},
 			getUserInfo() {
 				this.$H.get("user/userInfo").then(res => {
@@ -149,7 +150,7 @@
 					$store.state.loginUserInfo = res.result;
 					uni.setStorageSync("userInfo", res.result)
 					//连接websocket
-					websocket.initConnect();
+					// websocket.initConnect();
 					//获取好友列表
 					$store.dispatch('getFriendList');
 					///获取通知消息

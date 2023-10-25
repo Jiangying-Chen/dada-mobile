@@ -1,12 +1,13 @@
 <template>
 	<view class="prize-record-container">
 		<block v-if="lists.length!=0">
-			<view v-for="(item, index) in lists" :key="index" class="prize-record-item row">
+			<view v-for="(item, index) in lists" :key="index" class="prize-record-item row" @tap="goluckdetail(item.sn)">
 				<custom-image :src="item.prizeImage" style="width: 90rpx;height: 90rpx" radius="6rpx" />
 				<view class="prize-record-info">
 					<view class="lg" v-if="item.prizeType==1">{{item.prizeName}}＋{{item.number}}</view>
 					<view class="lg" v-else-if="item.prizeType==2">{{item.prizeName}}</view>
 					<view class="lg" v-else-if="item.prizeType==3">{{item.prizeName}}￥{{item.number}}</view>
+					<view class="lg" v-else-if="item.prizeType==4">{{item.prizeName}}</view>
 					<view class="xs lighter">领取时间：{{item.createTime}}</view>
 				</view>
 			</view>
@@ -21,7 +22,7 @@
 </template>
 
 <script>
-	import customImage from "../../components/custom-image/custom-image.vue"
+	import customImage from "@/subpages/content/custom-image.vue"
 
 	export default {
 		data() {
@@ -45,6 +46,12 @@
 		},
 
 		methods: {
+			goluckdetail(sn){
+				console.log(111111)
+				if(sn){
+					uni.navigateTo({
+					url:`/pages/store/luckdetail?sn=${sn}`})}
+			},
 			getUserRecordFun() {
 				this.loadStatus = "loading";
 				this.$H.get('luckDraw/record/' + this.page).then(res => {
